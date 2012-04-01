@@ -15,7 +15,8 @@ enum functions
 {
 	f_pT = 0,
 	f_ph,
-	f_ps
+	f_ps,
+	f_Tx
 };
 
 FunctionChoiceComboBox::FunctionChoiceComboBox()
@@ -23,6 +24,7 @@ FunctionChoiceComboBox::FunctionChoiceComboBox()
 	append("f(p, T)");
 	append("f(p, h)");
 	append("f(p, s)");
+	append("f(T, x)");
 
 	set_active(0);
 }
@@ -76,19 +78,13 @@ CalcBox::CalcBox()
 	attach(func_chooser, 1, 2, 0, 1);
 
 	set_fields(p, T, v, u, h, s, x);
+	recalc();
 
 	region_label.set_padding(0, 10);
 	region_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_END);
 	attach(region_label, 1, 3, 3, 4);
 
 	func_chooser.signal_changed().connect(sigc::mem_fun(*this, &CalcBox::reorder_fields));
-
-#if 0
-	v.signal_value_changed().connect(sigc::mem_fun(*this, &CalcBox::recalc));
-	u.signal_value_changed().connect(sigc::mem_fun(*this, &CalcBox::recalc));
-	h.signal_value_changed().connect(sigc::mem_fun(*this, &CalcBox::recalc));
-	s.signal_value_changed().connect(sigc::mem_fun(*this, &CalcBox::recalc));
-#endif
 }
 
 CalcBox::~CalcBox()
@@ -152,6 +148,9 @@ void CalcBox::recalc()
 			case f_ps:
 				medium = h2o::H2O::ps(p.get_value(), s.get_value());
 				break;
+			case f_Tx:
+				medium = h2o::H2O::Tx(T.get_value(), x.get_value());
+				break;
 		}
 	}
 	catch (std::range_error)
@@ -205,6 +204,11 @@ void CalcBox::recalc()
 			h.set_value(medium.h());
 			x.set_value(medium.x());
 			break;
+		case f_Tx:
+			p.set_value(medium.p());
+			h.set_value(medium.h());
+			s.set_value(medium.s());
+			break;
 	}
 
 	v.set_value(medium.v());
@@ -217,16 +221,21 @@ void CalcBox::reorder_fields()
 
 	switch (func_chooser.get_active_row_number())
 	{
-		case f_pT: // (p, T)
+		case f_pT:
 			set_fields(p, T, v, u, h, s, x);
 			break;
-		case f_ph: // (p, h)
+		case f_ph:
 			set_fields(p, h, T, v, u, s, x);
 			break;
-		case f_ps: // (p, s)
+		case f_ps:
 			set_fields(p, s, T, v, u, h, x);
 			break;
+		case f_Tx:
+			set_fields(T, x, p, v, u, h, s);
+			break;
 	}
+
+	recalc();
 }
 
 MainWindow::MainWindow()
