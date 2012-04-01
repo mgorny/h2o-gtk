@@ -60,13 +60,14 @@ void DataEntryPair::remove_from_table(Gtk::Table& t)
 }
 
 CalcBox::CalcBox()
-	: Gtk::Table(8, 3),
+	: Gtk::Table(9, 3),
 	p("p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
 	T("T", "K", 273.16, 2273.15, 1, 50, 2, 773.15),
 	v("v", "m³/kg", 0, 1E17, 0.01, 1, 4),
 	u("u", "kJ/kg", 0, 6400, 10, 200, 2),
 	h("h", "kJ/kg", 0, 7500, 10, 200, 2),
-	s("s", "kJ/kgK", 0, 28, 0.1, 2, 3)
+	s("s", "kJ/kgK", 0, 28, 0.1, 2, 3),
+	x("x", "[-]", 0, 1, 0.01, 0.04, 3)
 {
 	set_col_spacings(10);
 
@@ -74,7 +75,7 @@ CalcBox::CalcBox()
 
 	attach(func_chooser, 1, 2, 0, 1);
 
-	set_fields(p, T, v, u, h, s);
+	set_fields(p, T, v, u, h, s, x);
 
 	region_label.set_padding(0, 10);
 	region_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_END);
@@ -106,11 +107,13 @@ void CalcBox::remove_fields()
 	u.remove_from_table(*this);
 	h.remove_from_table(*this);
 	s.remove_from_table(*this);
+	x.remove_from_table(*this);
 }
 
 void CalcBox::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out1, DataEntryPair& out2,
-		DataEntryPair& out3, DataEntryPair& out4)
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
 {
 	in1.add_to_table(*this, 1);
 	in2.add_to_table(*this, 2);
@@ -124,10 +127,12 @@ void CalcBox::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	out2.add_to_table(*this, 5);
 	out3.add_to_table(*this, 6);
 	out4.add_to_table(*this, 7);
+	out5.add_to_table(*this, 8);
 	out1.set_editable(false);
 	out2.set_editable(false);
 	out3.set_editable(false);
 	out4.set_editable(false);
+	out5.set_editable(false);
 }
 
 void CalcBox::recalc()
@@ -188,14 +193,17 @@ void CalcBox::recalc()
 		case f_pT:
 			h.set_value(medium.h());
 			s.set_value(medium.s());
+			x.set_value(medium.x());
 			break;
 		case f_ph:
 			T.set_value(medium.T());
 			s.set_value(medium.s());
+			x.set_value(medium.x());
 			break;
 		case f_ps:
 			T.set_value(medium.T());
 			h.set_value(medium.h());
+			x.set_value(medium.x());
 			break;
 	}
 
@@ -210,13 +218,13 @@ void CalcBox::reorder_fields()
 	switch (func_chooser.get_active_row_number())
 	{
 		case f_pT: // (p, T)
-			set_fields(p, T, v, u, h, s);
+			set_fields(p, T, v, u, h, s, x);
 			break;
 		case f_ph: // (p, h)
-			set_fields(p, h, T, v, u, s);
+			set_fields(p, h, T, v, u, s, x);
 			break;
 		case f_ps: // (p, s)
-			set_fields(p, s, T, v, u, h);
+			set_fields(p, s, T, v, u, h, x);
 			break;
 	}
 }

@@ -47,7 +47,7 @@ class CalcBox : public Gtk::Table
 
 protected:
 	FunctionChoiceComboBox func_chooser;
-	DataEntryPair p, T, v, u, h, s;
+	DataEntryPair p, T, v, u, h, s, x;
 	Gtk::Label region_label;
 
 public:
@@ -57,7 +57,8 @@ public:
 	void remove_fields();
 	void set_fields(DataEntryPair& in1, DataEntryPair& in2,
 			DataEntryPair& out1, DataEntryPair& out2,
-			DataEntryPair& out3, DataEntryPair& out4);
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
 	void recalc();
 	void reorder_fields();
 };
