@@ -7,7 +7,7 @@
 #	include "config.h"
 #endif
 
-#include "mainwindow.hxx"
+#include "calcbox.hxx"
 
 #include <stdexcept>
 
@@ -261,17 +261,4 @@ void CalcBox::reorder_fields()
 	}
 
 	recalc();
-}
-
-MainWindow::MainWindow()
-{
-	set_border_width(10);
-
-	add(calcbox);
-
-	show_all();
-}
-
-MainWindow::~MainWindow()
-{
 }

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#ifndef _H2O_GTK_MAINWINDOW_HXX
-#define _H2O_GTK_MAINWINDOW_HXX 1
+#ifndef _H2O_GTK_CALCBOX_HXX
+#define _H2O_GTK_CALCBOX_HXX 1
 
 #include <h2o>
 
@@ -16,7 +16,6 @@
 #include <gtkmm/label.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/table.h>
-#include <gtkmm/window.h>
 
 class FunctionChoiceComboBox : public Gtk::ComboBoxText
 {
@@ -70,14 +69,4 @@ public:
 	void reorder_fields();
 };
 
-class MainWindow : public Gtk::Window
-{
-protected:
-	CalcBox calcbox;
-
-public:
-	MainWindow();
-	virtual ~MainWindow();
-};
-
-#endif /*_H2O_GTK_MAINWINDOW_HXX*/
+#endif /*_H2O_GTK_CALCBOX_HXX*/

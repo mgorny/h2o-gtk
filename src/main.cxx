@@ -7,9 +7,33 @@
 #	include "config.h"
 #endif
 
-#include "mainwindow.hxx"
+#include "calcbox.hxx"
 
 #include <gtkmm/main.h>
+#include <gtkmm/window.h>
+
+class MainWindow : public Gtk::Window
+{
+protected:
+	CalcBox calcbox;
+
+public:
+	MainWindow();
+	virtual ~MainWindow();
+};
+
+MainWindow::MainWindow()
+{
+	set_border_width(10);
+
+	add(calcbox);
+
+	show_all();
+}
+
+MainWindow::~MainWindow()
+{
+}
 
 int main(int argc, char* argv[])
 {
