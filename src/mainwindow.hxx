@@ -27,6 +27,8 @@ public:
 
 class DataEntryPair : public Gtk::SpinButton
 {
+	double def_min, def_max;
+
 protected:
 	Gtk::Label label;
 	Gtk::Label unit_label;
@@ -39,6 +41,11 @@ public:
 
 	void add_to_table(Gtk::Table& t, int row);
 	void remove_from_table(Gtk::Table& t);
+
+	void enable();
+	void disable();
+
+	void set_value(double newval);
 };
 
 class CalcBox : public Gtk::Table

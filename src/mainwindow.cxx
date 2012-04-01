@@ -37,6 +37,7 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 			double min, double max, double step, double pagestep,
 			double decplaces, double val)
 	: Gtk::SpinButton(0, decplaces),
+	def_min(min), def_max(max),
 	label(desc, Gtk::ALIGN_END, Gtk::ALIGN_CENTER),
 	unit_label(unit, Gtk::ALIGN_START, Gtk::ALIGN_CENTER)
 {
@@ -59,6 +60,28 @@ void DataEntryPair::remove_from_table(Gtk::Table& t)
 	t.remove(label);
 	t.remove(*this);
 	t.remove(unit_label);
+}
+
+void DataEntryPair::enable()
+{
+	set_editable(true);
+	set_range(def_min, def_max);
+}
+
+void DataEntryPair::disable()
+{
+	double val = get_value();
+
+	set_editable(false);
+	set_range(val, val);
+}
+
+void DataEntryPair::set_value(double val)
+{
+	set_range(val, val);
+#if 0 // set_range() should be enough
+	Gtk::SpinButton::set_value(val);
+#endif
 }
 
 CalcBox::CalcBox()
@@ -113,8 +136,8 @@ void CalcBox::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 {
 	in1.add_to_table(*this, 1);
 	in2.add_to_table(*this, 2);
-	in1.set_editable(true);
-	in2.set_editable(true);
+	in1.enable();
+	in2.enable();
 
 	conn1 = in1.signal_value_changed().connect(sigc::mem_fun(*this, &CalcBox::recalc));
 	conn2 = in2.signal_value_changed().connect(sigc::mem_fun(*this, &CalcBox::recalc));
@@ -124,12 +147,14 @@ void CalcBox::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	out3.add_to_table(*this, 6);
 	out4.add_to_table(*this, 7);
 	out5.add_to_table(*this, 8);
-	out1.set_editable(false);
-	out2.set_editable(false);
-	out3.set_editable(false);
-	out4.set_editable(false);
-	out5.set_editable(false);
+	out1.disable();
+	out2.disable();
+	out3.disable();
+	out4.disable();
+	out5.disable();
 }
+
+#include <iostream>
 
 void CalcBox::recalc()
 {
