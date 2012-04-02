@@ -19,6 +19,10 @@ PlotAxisChoice::PlotAxisChoice(int def)
 {
 	append("p");
 	append("T");
+	append("v");
+	append("u");
+	append("h");
+	append("s");
 
 	set_active(def);
 }
@@ -61,7 +65,7 @@ SaturationCurve::SaturationCurve()
 void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 {
 	const int len = 623 - 273 + 1;
-	double x[len], y[len];
+	double x[len*2], y[len*2];
 
 	int i;
 
@@ -69,12 +73,16 @@ void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 	{
 		double T = 273.15 + i;
 		h2o::H2O water = h2o::H2O::Tx(T, 0);
+		h2o::H2O steam = h2o::H2O::Tx(T, 1);
 
 		x[i] = (water.*x_prop)();
 		y[i] = (water.*y_prop)();
+
+		x[2*len - i - 1] = (steam.*x_prop)();
+		y[2*len - i - 1] = (steam.*y_prop)();
 	}
 
-	set_data(x, y, len);
+	set_data(x, y, 2*len);
 }
 
 Plot::Plot()
@@ -101,6 +109,14 @@ static PlotAxisProperty quant_to_prop(enum PlotAxisQuantity q)
 			return &h2o::H2O::p;
 		case pa_T:
 			return &h2o::H2O::T;
+		case pa_v:
+			return &h2o::H2O::v;
+		case pa_u:
+			return &h2o::H2O::u;
+		case pa_h:
+			return &h2o::H2O::h;
+		case pa_s:
+			return &h2o::H2O::s;
 		default:
 			assert(!"Invalid plot axis");
 	}
