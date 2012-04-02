@@ -88,12 +88,9 @@ CalcBox::CalcBox()
 {
 	set_col_spacings(10);
 
-	recalc();
-
 	attach(func_chooser, 1, 2, 0, 1);
 
 	set_fields(p, T, v, u, h, s, x);
-	recalc();
 
 	region_label.set_padding(0, 10);
 	region_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_END);
@@ -226,6 +223,8 @@ void CalcBox::recalc()
 
 	v.set_value(medium.v());
 	u.set_value(medium.u());
+
+	data_changed.emit(&medium, 1);
 }
 
 void CalcBox::reorder_fields()
@@ -249,4 +248,9 @@ void CalcBox::reorder_fields()
 	}
 
 	recalc();
+}
+
+CalcBox::data_changed_sig CalcBox::signal_data_changed()
+{
+	return data_changed;
 }

@@ -62,7 +62,16 @@ class SaturationCurve : public PlotMM::Curve
 public:
 	SaturationCurve();
 
-	void replot(PlotAxisProperty x, PlotAxisProperty y);
+	void replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop);
+};
+
+class DataCurve : public PlotMM::Curve
+{
+public:
+	DataCurve();
+
+	void replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
+			h2o::H2O data[], int len);
 };
 
 class Plot : public PlotMM::Plot
@@ -71,11 +80,13 @@ class Plot : public PlotMM::Plot
 
 protected:
 	Glib::RefPtr<SaturationCurve> saturation_curve;
+	Glib::RefPtr<DataCurve> data_curve;
 
 public:
 	Plot();
 
 	void update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y);
+	void plot_data(h2o::H2O data[], int len);
 };
 
 class PlotBox : public Gtk::VBox
@@ -86,6 +97,8 @@ protected:
 
 public:
 	PlotBox();
+
+	void update_data_plot(h2o::H2O* data, int len);
 };
 
 #endif /*_H2O_GTK_PLOT_HXX*/

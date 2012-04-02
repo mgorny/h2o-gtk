@@ -10,9 +10,12 @@
 #include "calcbox.hxx"
 #include "plot.hxx"
 
+#include <h2o>
+
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/window.h>
+#include <sigc++/functors/mem_fun.h>
 
 class MainHBox : public Gtk::HBox
 {
@@ -36,6 +39,10 @@ public:
 
 MainHBox::MainHBox()
 {
+	calcbox.signal_data_changed().connect(
+			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
+	calcbox.recalc();
+
 	set_spacing(10);
 
 	pack_start(calcbox, Gtk::PACK_SHRINK);

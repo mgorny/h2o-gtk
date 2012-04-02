@@ -12,6 +12,7 @@
 
 #include <sigc++/functors/mem_fun.h>
 #include <sigc++/connection.h>
+#include <sigc++/signal.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/label.h>
 #include <gtkmm/spinbutton.h>
@@ -48,11 +49,14 @@ public:
 class CalcBox : public Gtk::Table
 {
 	sigc::connection conn1, conn2;
+	typedef sigc::signal<void, h2o::H2O*, int>
+		data_changed_sig;
 
 protected:
 	FunctionChoiceComboBox func_chooser;
 	DataEntryPair p, T, v, u, h, s, x;
 	Gtk::Label region_label;
+	data_changed_sig data_changed;
 
 public:
 	CalcBox();
@@ -64,6 +68,8 @@ public:
 			DataEntryPair& out5);
 	void recalc();
 	void reorder_fields();
+
+	data_changed_sig signal_data_changed();
 };
 
 #endif /*_H2O_GTK_CALCBOX_HXX*/

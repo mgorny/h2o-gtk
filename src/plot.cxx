@@ -13,6 +13,7 @@
 
 #include <gdkmm/color.h>
 #include <plotmm/paint.h>
+#include <plotmm/symbol.h>
 #include <sigc++/functors/mem_fun.h>
 
 PlotAxisChoice::PlotAxisChoice(int def)
@@ -85,9 +86,35 @@ void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 	set_data(x, y, 2*len);
 }
 
+#include <iostream>
+
+DataCurve::DataCurve()
+{
+	symbol()->paint()->set_pen_color(Gdk::Color("red"));
+	symbol()->set_style(PlotMM::SYMBOL_CROSS);
+	symbol()->set_size(5);
+}
+
+void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
+			h2o::H2O data[], int len)
+{
+	double x[len], y[len];
+
+	int i;
+
+	for (i = 0; i < len; ++i)
+	{
+		x[i] = (data[i].*x_prop)();
+		y[i] = (data[i].*y_prop)();
+	}
+
+	set_data(x, y, len);
+}
+
 Plot::Plot()
 	: x_prop(&h2o::H2O::T), y_prop(&h2o::H2O::p),
-	saturation_curve(new SaturationCurve())
+	saturation_curve(new SaturationCurve()),
+	data_curve(new DataCurve())
 {
 	set_size_request(300, 200);
 
@@ -96,6 +123,7 @@ Plot::Plot()
 	scale(PlotMM::AXIS_RIGHT)->set_enabled(false);
 
 	add_curve(saturation_curve);
+	add_curve(data_curve);
 
 	saturation_curve->replot(x_prop, y_prop);
 	replot();
@@ -131,6 +159,12 @@ void Plot::update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y)
 	replot();
 }
 
+void Plot::plot_data(h2o::H2O data[], int len)
+{
+	data_curve->replot(x_prop, y_prop, data, len);
+	replot();
+}
+
 PlotBox::PlotBox()
 {
 	axes_control.signal_axes_changed().connect(
@@ -138,4 +172,9 @@ PlotBox::PlotBox()
 
 	pack_start(axes_control, Gtk::PACK_SHRINK, 2);
 	pack_start(plot);
+}
+
+void PlotBox::update_data_plot(h2o::H2O* data, int len)
+{
+	plot.plot_data(data, len);
 }
