@@ -8,24 +8,49 @@
 #endif
 
 #include "calcbox.hxx"
+#include "plot.hxx"
 
+#include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/window.h>
+
+class MainHBox : public Gtk::HBox
+{
+protected:
+	CalcBox calcbox;
+	PlotBox plotbox;
+
+public:
+	MainHBox();
+	virtual ~MainHBox();
+};
 
 class MainWindow : public Gtk::Window
 {
 protected:
-	CalcBox calcbox;
+	MainHBox cont;
 
 public:
 	MainWindow();
 };
 
+MainHBox::MainHBox()
+{
+	set_spacing(10);
+
+	pack_start(calcbox, Gtk::PACK_SHRINK);
+	pack_start(plotbox);
+}
+
+MainHBox::~MainHBox()
+{
+}
+
 MainWindow::MainWindow()
 {
 	set_border_width(10);
 
-	add(calcbox);
+	add(cont);
 
 	show_all();
 }
