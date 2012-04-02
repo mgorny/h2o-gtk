@@ -21,7 +21,6 @@ class FunctionChoiceComboBox : public Gtk::ComboBoxText
 {
 public:
 	FunctionChoiceComboBox();
-	virtual ~FunctionChoiceComboBox();
 };
 
 class DataEntryPair : public Gtk::SpinButton
@@ -36,7 +35,6 @@ public:
 	DataEntryPair(const char* desc, const char* unit,
 			double min, double max, double step, double pagestep,
 			double decplaces, double val = 0);
-	virtual ~DataEntryPair();
 
 	void add_to_table(Gtk::Table& t, int row);
 	void remove_from_table(Gtk::Table& t);
@@ -58,7 +56,6 @@ protected:
 
 public:
 	CalcBox();
-	virtual ~CalcBox();
 
 	void remove_fields();
 	void set_fields(DataEntryPair& in1, DataEntryPair& in2,

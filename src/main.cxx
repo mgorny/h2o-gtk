@@ -19,7 +19,6 @@ protected:
 
 public:
 	MainWindow();
-	virtual ~MainWindow();
 };
 
 MainWindow::MainWindow()
@@ -29,10 +28,6 @@ MainWindow::MainWindow()
 	add(calcbox);
 
 	show_all();
-}
-
-MainWindow::~MainWindow()
-{
 }
 
 int main(int argc, char* argv[])

@@ -29,10 +29,6 @@ FunctionChoiceComboBox::FunctionChoiceComboBox()
 	set_active(0);
 }
 
-FunctionChoiceComboBox::~FunctionChoiceComboBox()
-{
-}
-
 DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 			double min, double max, double step, double pagestep,
 			double decplaces, double val)
@@ -42,10 +38,6 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 	unit_label(unit, Gtk::ALIGN_START, Gtk::ALIGN_CENTER)
 {
 	get_adjustment()->configure(val, min, max, step, pagestep, 0);
-}
-
-DataEntryPair::~DataEntryPair()
-{
 }
 
 void DataEntryPair::add_to_table(Gtk::Table& t, int row)
@@ -108,10 +100,6 @@ CalcBox::CalcBox()
 	attach(region_label, 1, 3, 3, 4);
 
 	func_chooser.signal_changed().connect(sigc::mem_fun(*this, &CalcBox::reorder_fields));
-}
-
-CalcBox::~CalcBox()
-{
 }
 
 void CalcBox::remove_fields()
