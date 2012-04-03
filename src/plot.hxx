@@ -8,6 +8,8 @@
 #ifndef _H2O_GTK_PLOT_HXX
 #define _H2O_GTK_PLOT_HXX 1
 
+#include <vector>
+
 #include <h2o>
 
 #include <glibmm/refptr.h>
@@ -71,12 +73,13 @@ public:
 	DataCurve();
 
 	void replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
-			h2o::H2O data[], int len);
+			std::vector<h2o::H2O>& data);
 };
 
 class Plot : public PlotMM::Plot
 {
 	PlotAxisProperty x_prop, y_prop;
+	std::vector<h2o::H2O> current_data;
 
 protected:
 	Glib::RefPtr<SaturationCurve> saturation_curve;

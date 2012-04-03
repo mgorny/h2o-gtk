@@ -96,8 +96,10 @@ DataCurve::DataCurve()
 }
 
 void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
-			h2o::H2O data[], int len)
+			std::vector<h2o::H2O>& data)
 {
+	const int len = data.size();
+
 	double x[len], y[len];
 
 	int i;
@@ -156,12 +158,20 @@ void Plot::update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y)
 	y_prop = quant_to_prop(y);
 
 	saturation_curve->replot(x_prop, y_prop);
+	data_curve->replot(x_prop, y_prop, current_data);
 	replot();
 }
 
 void Plot::plot_data(h2o::H2O data[], int len)
 {
-	data_curve->replot(x_prop, y_prop, data, len);
+	int i;
+
+	current_data.reserve(len);
+	current_data.clear();
+	for (i = 0; i < len; ++i)
+		current_data.push_back(data[i]);
+
+	data_curve->replot(x_prop, y_prop, current_data);
 	replot();
 }
 
