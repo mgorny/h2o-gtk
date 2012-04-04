@@ -29,7 +29,8 @@ enum PlotAxisQuantity
 	pa_v,
 	pa_u,
 	pa_h,
-	pa_s
+	pa_s,
+	pa_rho
 };
 
 typedef double (h2o::H2O::*PlotAxisProperty)() const;

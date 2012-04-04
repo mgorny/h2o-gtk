@@ -24,6 +24,7 @@ PlotAxisChoice::PlotAxisChoice(int def)
 	append("u");
 	append("h");
 	append("s");
+	append("\317\201");
 
 	set_active(def);
 }
@@ -150,6 +151,8 @@ static PlotAxisProperty quant_to_prop(enum PlotAxisQuantity q)
 			return &h2o::H2O::h;
 		case pa_s:
 			return &h2o::H2O::s;
+		case pa_rho:
+			return &h2o::H2O::rho;
 		default:
 			assert(!"Invalid plot axis");
 	}
