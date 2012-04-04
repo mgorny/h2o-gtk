@@ -88,9 +88,9 @@ void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 
 #include <iostream>
 
-DataCurve::DataCurve()
+DataCurve::DataCurve(const char* color)
 {
-	symbol()->paint()->set_pen_color(Gdk::Color("red"));
+	symbol()->paint()->set_pen_color(Gdk::Color(color));
 	symbol()->set_style(PlotMM::SYMBOL_CROSS);
 	symbol()->set_size(5);
 }
@@ -116,7 +116,8 @@ void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
 Plot::Plot()
 	: x_prop(&h2o::H2O::T), y_prop(&h2o::H2O::p),
 	saturation_curve(new SaturationCurve()),
-	data_curve(new DataCurve())
+	data_curve(new DataCurve("red")),
+	user_plot_curve(new DataCurve("green"))
 {
 	set_size_request(300, 200);
 
@@ -126,6 +127,8 @@ Plot::Plot()
 
 	add_curve(saturation_curve);
 	add_curve(data_curve);
+	add_curve(user_plot_curve);
+	user_plot_curve->set_enabled(false);
 
 	saturation_curve->replot(x_prop, y_prop);
 	replot();
@@ -159,6 +162,7 @@ void Plot::update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y)
 
 	saturation_curve->replot(x_prop, y_prop);
 	data_curve->replot(x_prop, y_prop, current_data);
+	user_plot_curve->replot(x_prop, y_prop, user_data);
 	replot();
 }
 
@@ -175,13 +179,63 @@ void Plot::plot_data(h2o::H2O data[], int len)
 	replot();
 }
 
+void Plot::append_plot()
+{
+	const int len = current_data.size();
+
+	int i;
+
+	user_data.reserve(user_data.size() + len);
+	for (i = 0; i < len; ++i)
+		user_data.push_back(current_data[i]);
+
+	user_plot_curve->replot(x_prop, y_prop, user_data);
+	user_plot_curve->set_enabled(true);
+	replot();
+}
+
+void Plot::clear_plot()
+{
+	user_data.clear();
+
+	user_plot_curve->set_enabled(false);
+	replot();
+}
+
+PlotBottomControlBox::PlotBottomControlBox()
+	: Gtk::Table(1, 2),
+	add_to_plot("Add to plot"),
+	clear_plot("Clear plot")
+{
+	add_to_plot.signal_clicked().connect(add_to_plot_sig);
+	clear_plot.signal_clicked().connect(clear_plot_sig);
+
+	attach(add_to_plot, 0, 1, 0, 1);
+	attach(clear_plot, 1, 2, 0, 1);
+}
+
+PlotBottomControlBox::button_sig PlotBottomControlBox::signal_add_to_plot()
+{
+	return add_to_plot_sig;
+}
+
+PlotBottomControlBox::button_sig PlotBottomControlBox::signal_clear_plot()
+{
+	return clear_plot_sig;
+}
+
 PlotBox::PlotBox()
 {
 	axes_control.signal_axes_changed().connect(
 			sigc::mem_fun(plot, &Plot::update_axes));
+	bottom_control.signal_add_to_plot().connect(
+			sigc::mem_fun(plot, &Plot::append_plot));
+	bottom_control.signal_clear_plot().connect(
+			sigc::mem_fun(plot, &Plot::clear_plot));
 
 	pack_start(axes_control, Gtk::PACK_SHRINK, 2);
 	pack_start(plot);
+	pack_start(bottom_control, Gtk::PACK_SHRINK, 2);
 }
 
 void PlotBox::update_data_plot(h2o::H2O* data, int len)
