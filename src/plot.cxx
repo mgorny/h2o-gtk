@@ -34,7 +34,7 @@ enum PlotAxisQuantity PlotAxisChoice::get_quantity()
 }
 
 PlotAxesControl::PlotAxesControl()
-	: x(1), y(0), sep("-")
+	: x(5), y(1), sep("-")
 {
 	x.signal_changed().connect(
 			sigc::mem_fun(*this, &PlotAxesControl::axis_changed));
@@ -114,7 +114,7 @@ void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
 }
 
 Plot::Plot()
-	: x_prop(&h2o::H2O::T), y_prop(&h2o::H2O::p),
+	: x_prop(&h2o::H2O::s), y_prop(&h2o::H2O::T),
 	saturation_curve(new SaturationCurve()),
 	data_curve(new DataCurve("red")),
 	user_plot_curve(new DataCurve("green"))
