@@ -137,25 +137,36 @@ Plot::Plot()
 
 static PlotAxisProperty quant_to_prop(enum PlotAxisQuantity q)
 {
+	PlotAxisProperty ret;
+
 	switch (q)
 	{
 		case pa_p:
-			return &h2o::H2O::p;
+			ret = &h2o::H2O::p;
+			break;
 		case pa_T:
-			return &h2o::H2O::T;
+			ret = &h2o::H2O::T;
+			break;
 		case pa_v:
-			return &h2o::H2O::v;
+			ret = &h2o::H2O::v;
+			break;
 		case pa_u:
-			return &h2o::H2O::u;
+			ret = &h2o::H2O::u;
+			break;
 		case pa_h:
-			return &h2o::H2O::h;
+			ret = &h2o::H2O::h;
+			break;
 		case pa_s:
-			return &h2o::H2O::s;
+			ret = &h2o::H2O::s;
+			break;
 		case pa_rho:
-			return &h2o::H2O::rho;
+			ret = &h2o::H2O::rho;
+			break;
 		default:
 			assert(!"Invalid plot axis");
 	}
+
+	return ret;
 }
 
 void Plot::update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y)
