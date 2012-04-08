@@ -230,8 +230,8 @@ void Plot::clear_plot()
 
 PlotBottomControlBox::PlotBottomControlBox()
 	: Gtk::Table(1, 2),
-	add_to_plot("Add to plot"),
-	clear_plot("Clear plot")
+	add_to_plot("_Add to plot", true),
+	clear_plot("_Clear plot", true)
 {
 	add_to_plot.signal_clicked().connect(add_to_plot_sig);
 	clear_plot.signal_clicked().connect(clear_plot_sig);
