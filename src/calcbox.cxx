@@ -142,8 +142,6 @@ void CalcBox::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	out5.disable();
 }
 
-#include <iostream>
-
 typedef double (h2o::H2O::*MediumProperty)() const;
 
 static inline void update_field(DataEntryPair& dest, h2o::H2O& medium, MediumProperty prop)
