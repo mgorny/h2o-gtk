@@ -36,10 +36,12 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 			double decplaces, double val)
 	: Gtk::SpinButton(0, decplaces),
 	def_min(min), def_max(max),
-	label(desc, Gtk::ALIGN_END, Gtk::ALIGN_CENTER),
+	label(desc, Gtk::ALIGN_END, Gtk::ALIGN_CENTER, true),
 	unit_label(unit, Gtk::ALIGN_START, Gtk::ALIGN_CENTER)
 {
 	get_adjustment()->configure(val, min, max, step, pagestep, 0);
+
+	label.set_mnemonic_widget(*this);
 }
 
 void DataEntryPair::add_to_table(Gtk::Table& t, int row)
@@ -81,16 +83,19 @@ void DataEntryPair::set_value(double val)
 
 CalcBox::CalcBox()
 	: Gtk::Table(9, 3),
-	p("p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
-	T("T", "K", 273.15, 2273.15, 1, 50, 2, 773.15),
-	v("v", "m³/kg", 0, 1E17, 0.01, 1, 6),
-	u("u", "kJ/kg", 0, 6400, 10, 200, 2),
-	h("h", "kJ/kg", 0, 7500, 10, 200, 2),
-	s("s", "kJ/kgK", 0, 28, 0.04, 0.2, 3),
-	x("x", "[-]", 0, 1, 0.004, 0.02, 3)
+	p("_p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
+	T("_T", "K", 273.15, 2273.15, 1, 50, 2, 773.15),
+	v("_v", "m³/kg", 0, 1E17, 0.01, 1, 6),
+	u("_u", "kJ/kg", 0, 6400, 10, 200, 2),
+	h("_h", "kJ/kg", 0, 7500, 10, 200, 2),
+	s("_s", "kJ/kgK", 0, 28, 0.04, 0.2, 3),
+	x("_x", "[-]", 0, 1, 0.004, 0.02, 3),
+	func_label("_f", true)
 {
 	set_col_spacings(10);
 
+	func_label.set_mnemonic_widget(func_chooser);
+	attach(func_label, 0, 1, 0, 1);
 	attach(func_chooser, 1, 2, 0, 1);
 
 	set_fields(p, T, v, u, h, s, x);

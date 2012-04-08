@@ -55,7 +55,7 @@ class CalcBox : public Gtk::Table
 protected:
 	FunctionChoiceComboBox func_chooser;
 	DataEntryPair p, T, v, u, h, s, x;
-	Gtk::Label region_label;
+	Gtk::Label func_label, region_label;
 	data_changed_sig data_changed;
 
 public:
