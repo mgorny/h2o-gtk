@@ -17,7 +17,8 @@ enum functions
 	f_ph,
 	f_ps,
 	f_px,
-	f_Tx
+	f_Tx,
+	f_hs
 };
 
 FunctionChoiceComboBox::FunctionChoiceComboBox()
@@ -27,6 +28,7 @@ FunctionChoiceComboBox::FunctionChoiceComboBox()
 	append("f(p, s)");
 	append("f(p, x)");
 	append("f(T, x)");
+	append("f(h, s)");
 
 	set_active(0);
 }
@@ -186,6 +188,9 @@ void CalcBox::recalc()
 			case f_Tx:
 				medium = h2o::H2O::Tx(T.get_value(), x.get_value());
 				break;
+			case f_hs:
+				medium = h2o::H2O::hs(h.get_value(), s.get_value());
+				break;
 		}
 
 		const char* label_text;
@@ -247,6 +252,11 @@ void CalcBox::recalc()
 			update_field(h, medium, &h2o::H2O::h);
 			update_field(s, medium, &h2o::H2O::s);
 			break;
+		case f_hs:
+			update_field(p, medium, &h2o::H2O::p);
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(x, medium, &h2o::H2O::x);
+			break;
 	}
 
 	update_field(v, medium, &h2o::H2O::v);
@@ -275,6 +285,9 @@ void CalcBox::reorder_fields()
 			break;
 		case f_Tx:
 			set_fields(T, x, p, v, u, h, s);
+			break;
+		case f_hs:
+			set_fields(h, s, p, T, v, u, x);
 			break;
 	}
 
