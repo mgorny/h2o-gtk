@@ -87,8 +87,6 @@ void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 	set_data(x, y, 2*len);
 }
 
-#include <iostream>
-
 DataCurve::DataCurve(const char* color)
 {
 	symbol()->paint()->set_pen_color(Gdk::Color(color));
