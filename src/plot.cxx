@@ -103,15 +103,28 @@ void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
 
 	double x[len], y[len];
 
-	int i;
+	int i, j;
 
-	for (i = 0; i < len; ++i)
+	for (i = 0, j = 0; i < len; ++i)
 	{
-		x[i] = (data[i].*x_prop)();
-		y[i] = (data[i].*y_prop)();
+		try
+		{
+			x[i] = (data[i].*x_prop)();
+			y[i] = (data[i].*y_prop)();
+			++j;
+		}
+		catch (std::runtime_error)
+		{
+		};
 	}
 
-	set_data(x, y, len);
+	if (j > 0)
+	{
+		set_data(x, y, j);
+		set_enabled(true);
+	}
+	else
+		set_enabled(false);
 }
 
 Plot::Plot()
@@ -204,7 +217,6 @@ void Plot::append_plot()
 		user_data.push_back(current_data[i]);
 
 	user_plot_curve->replot(x_prop, y_prop, user_data);
-	user_plot_curve->set_enabled(true);
 	replot();
 }
 

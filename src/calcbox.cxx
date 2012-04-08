@@ -59,6 +59,7 @@ void DataEntryPair::remove_from_table(Gtk::Table& t)
 void DataEntryPair::enable()
 {
 	set_editable(true);
+	set_sensitive(true);
 	set_range(def_min, def_max);
 }
 
@@ -143,6 +144,22 @@ void CalcBox::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 
 #include <iostream>
 
+typedef double (h2o::H2O::*MediumProperty)() const;
+
+static inline void update_field(DataEntryPair& dest, h2o::H2O& medium, MediumProperty prop)
+{
+	try
+	{
+		double v = (medium.*prop)();
+		dest.set_value(v);
+		dest.set_sensitive(true);
+	}
+	catch (std::runtime_error)
+	{
+		dest.set_sensitive(false);
+	};
+}
+
 void CalcBox::recalc()
 {
 	h2o::H2O medium;
@@ -167,72 +184,70 @@ void CalcBox::recalc()
 				medium = h2o::H2O::Tx(T.get_value(), x.get_value());
 				break;
 		}
+
+		const char* label_text;
+		switch (medium.region())
+		{
+			case 1:
+				label_text = "Region 1 (saturated water)";
+				break;
+			case 2:
+				label_text = "Region 2 (dry steam)";
+				break;
+			case 3:
+				label_text = "Region 3 (supercritical)";
+				break;
+			case 4:
+				label_text = "Region 4 (wet steam)";
+				break;
+			case 5:
+				label_text = "Region 5 (dry steam)";
+				break;
+			default:
+				label_text = "Region unknown/invalid";
+		}
+		region_label.set_text(label_text);
 	}
 	catch (std::range_error)
 	{
-		region_label.set_text("Parameters out-of-range");
-		return;
+		region_label.set_text("Out-of-range");
 	}
 	catch (std::runtime_error)
 	{
-		region_label.set_text("Region not implemented");
-		return;
+		region_label.set_text("Not implemented");
 	};
-
-	const char* label_text;
-	switch (medium.region())
-	{
-		case 1:
-			label_text = "Region 1 (saturated water)";
-			break;
-		case 2:
-			label_text = "Region 2 (dry steam)";
-			break;
-		case 3:
-			label_text = "Region 3 (supercritical)";
-			break;
-		case 4:
-			label_text = "Region 4 (wet steam)";
-			break;
-		case 5:
-			label_text = "Region 5 (dry steam)";
-			break;
-		default:
-			label_text = "Unknown/invalid";
-	}
-	region_label.set_text(label_text);
 
 	switch (func_chooser.get_active_row_number())
 	{
 		case f_pT:
-			h.set_value(medium.h());
-			s.set_value(medium.s());
-			x.set_value(medium.x());
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
+			update_field(x, medium, &h2o::H2O::x);
 			break;
 		case f_ph:
-			T.set_value(medium.T());
-			s.set_value(medium.s());
-			x.set_value(medium.x());
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(s, medium, &h2o::H2O::s);
+			update_field(x, medium, &h2o::H2O::x);
 			break;
 		case f_ps:
-			T.set_value(medium.T());
-			h.set_value(medium.h());
-			x.set_value(medium.x());
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(x, medium, &h2o::H2O::x);
 			break;
 		case f_px:
-			T.set_value(medium.T());
-			h.set_value(medium.h());
-			s.set_value(medium.s());
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
 			break;
 		case f_Tx:
-			p.set_value(medium.p());
-			h.set_value(medium.h());
-			s.set_value(medium.s());
+			update_field(p, medium, &h2o::H2O::p);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
 			break;
 	}
 
-	v.set_value(medium.v());
-	u.set_value(medium.u());
+	update_field(v, medium, &h2o::H2O::v);
+	update_field(u, medium, &h2o::H2O::u);
 
 	data_changed.emit(&medium, 1);
 }
