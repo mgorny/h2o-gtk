@@ -9,6 +9,8 @@
 
 #include "plot.hxx"
 
+#include <h2o/region3.h>
+
 #include <cassert>
 
 #include <gdkmm/color.h>
@@ -68,26 +70,54 @@ void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 {
 	const double Tmin = 273.15;
 	const double Tmax = 623.15;
+	const int Tlen = Tmax - Tmin;
 
-	const int len = Tmax - Tmin + 1;
-	double x[len*2], y[len*2];
+	// last points between R1/2 & 3
+	h2o::H2O b13 = h2o::H2O::Tx(Tmax, 0);
+	h2o::H2O b23 = h2o::H2O::Tx(Tmax, 1);
+
+	const double smin = b13.s();
+	const double smax = b23.s();
+	const double sstep = 0.1;
+	const int slen = (smax - smin) / sstep;
+
+	const int len = 2*Tlen + slen + 2;
+
+	double x[len], y[len];
 
 	int i;
 
-	for (i = 0; i < len; ++i)
+	for (i = 0; i < Tlen; ++i)
 	{
-		double T = Tmin + i;
+		const double T = Tmin + i;
 		h2o::H2O water = h2o::H2O::Tx(T, 0);
 		h2o::H2O steam = h2o::H2O::Tx(T, 1);
 
 		x[i] = (water.*x_prop)();
 		y[i] = (water.*y_prop)();
 
-		x[2*len - i - 1] = (steam.*x_prop)();
-		y[2*len - i - 1] = (steam.*y_prop)();
+		x[len - i - 1] = (steam.*x_prop)();
+		y[len - i - 1] = (steam.*y_prop)();
 	}
 
-	set_data(x, y, 2*len);
+	x[Tlen] = (b13.*x_prop)();
+	y[Tlen] = (b13.*y_prop)();
+
+	x[len - Tlen - 1] = (b23.*x_prop)();
+	y[len - Tlen - 1] = (b23.*y_prop)();
+
+	for (i = 0; i < slen; ++i)
+	{
+		const double s = smin + i * sstep;
+		const double psat = h2o_region3_psat_s(s);
+
+		h2o::H2O p = h2o::H2O::ps(psat, s);
+
+		x[Tlen + 1 + i] = (p.*x_prop)();
+		y[Tlen + 1 + i] = (p.*y_prop)();
+	}
+
+	set_data(x, y, len);
 }
 
 DataCurve::DataCurve(const char* color)
