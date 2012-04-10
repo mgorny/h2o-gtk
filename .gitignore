@@ -1,5 +1,6 @@
 *.o
-/.deps/
+.deps
+.dirstamp
 /Makefile
 /Makefile.in
 /aclocal.m4
