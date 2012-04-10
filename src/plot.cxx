@@ -66,14 +66,17 @@ SaturationCurve::SaturationCurve()
 
 void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 {
-	const int len = 623 - 273 + 1;
+	const double Tmin = 273.15;
+	const double Tmax = 623.15;
+
+	const int len = Tmax - Tmin + 1;
 	double x[len*2], y[len*2];
 
 	int i;
 
 	for (i = 0; i < len; ++i)
 	{
-		double T = 273.15 + i;
+		double T = Tmin + i;
 		h2o::H2O water = h2o::H2O::Tx(T, 0);
 		h2o::H2O steam = h2o::H2O::Tx(T, 1);
 
