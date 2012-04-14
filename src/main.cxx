@@ -14,14 +14,17 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
+#include <gtkmm/notebook.h>
 #include <gtkmm/window.h>
 #include <sigc++/functors/mem_fun.h>
 
 class MainHBox : public Gtk::HBox
 {
 protected:
-	CalcBox calcbox;
 	PlotBox plotbox;
+	Gtk::Notebook notebook;
+
+	CalcBox single_point_box;
 
 public:
 	MainHBox();
@@ -39,13 +42,15 @@ public:
 
 MainHBox::MainHBox()
 {
-	calcbox.signal_data_changed().connect(
-			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
-	calcbox.recalc();
-
 	set_spacing(10);
 
-	pack_start(calcbox, Gtk::PACK_SHRINK);
+	single_point_box.signal_data_changed().connect(
+			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
+	single_point_box.recalc();
+
+	notebook.append_page(single_point_box, "Single point");
+
+	pack_start(notebook, Gtk::PACK_SHRINK);
 	pack_start(plotbox);
 }
 
