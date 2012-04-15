@@ -53,8 +53,8 @@ CalcBox::CalcBox()
 	set_fields(p, T, v, u, h, s, x);
 
 	region_label.set_padding(0, 10);
-	region_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_END);
-	attach(region_label, 1, 3, 3, 4);
+	region_label.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_END);
+	attach(region_label, 0, 3, 3, 4);
 
 	func_chooser.signal_changed().connect(sigc::mem_fun(*this, &CalcBox::reorder_fields));
 }
