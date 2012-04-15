@@ -32,7 +32,6 @@ protected:
 
 public:
 	MainHBox();
-	virtual ~MainHBox();
 };
 
 class MainWindow : public Gtk::Window
@@ -70,10 +69,6 @@ MainHBox::MainHBox()
 #else /*!HAVE_PLOTMM*/
 	pack_start(notebook);
 #endif /*HAVE_PLOTMM*/
-}
-
-MainHBox::~MainHBox()
-{
 }
 
 MainWindow::MainWindow()
