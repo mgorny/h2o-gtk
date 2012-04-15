@@ -22,8 +22,10 @@ class SaturationBox : public Gtk::Table
 	typedef sigc::signal<void, h2o::H2O*, int>
 		data_changed_sig;
 
+	void fill_hs(h2o::H2O& water, h2o::H2O& steam);
+
 protected:
-	DataEntryPair p, T;
+	DataEntryPair p, T, h1, h2, r, s1, s2;
 	data_changed_sig data_changed;
 
 public:
