@@ -106,7 +106,7 @@ static inline void update_field(DataEntryPair& dest, h2o::H2O& medium, MediumPro
 	try
 	{
 		double v = (medium.*prop)();
-		dest.set_value(v);
+		dest.set_readonly_value(v);
 		dest.set_sensitive(true);
 	}
 	catch (std::runtime_error)

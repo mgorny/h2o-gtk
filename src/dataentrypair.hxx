@@ -31,7 +31,7 @@ public:
 	void enable();
 	void disable();
 
-	void set_value(double newval);
+	void set_readonly_value(double newval);
 };
 
 #endif /*_H2O_GTK_DATAENTRYPAIR_HXX*/

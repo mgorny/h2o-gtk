@@ -51,7 +51,7 @@ void DataEntryPair::disable()
 	set_range(val, val);
 }
 
-void DataEntryPair::set_value(double val)
+void DataEntryPair::set_readonly_value(double val)
 {
 	set_range(val, val);
 #if 0 // set_range() should be enough
