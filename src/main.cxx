@@ -32,6 +32,8 @@ protected:
 
 public:
 	MainHBox();
+
+	void page_switched(GtkNotebookPage* p, guint n);
 };
 
 class MainWindow : public Gtk::Window
@@ -47,9 +49,6 @@ MainHBox::MainHBox()
 {
 	set_spacing(10);
 
-	// recalc before bounding signals to avoid unnecessary plotting
-	saturation_box.recalc();
-
 #ifdef HAVE_PLOTMM
 	single_point_box.signal_data_changed().connect(
 			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
@@ -57,11 +56,11 @@ MainHBox::MainHBox()
 			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
 #endif /*HAVE_PLOTMM*/
 
-	// recalc first tab last
-	single_point_box.recalc();
-
 	notebook.append_page(single_point_box, "Single point");
 	notebook.append_page(saturation_box, "Saturation");
+
+	notebook.signal_switch_page().connect(
+			sigc::mem_fun(*this, &MainHBox::page_switched));
 
 #ifdef HAVE_PLOTMM
 	pack_start(notebook, Gtk::PACK_SHRINK);
@@ -69,6 +68,19 @@ MainHBox::MainHBox()
 #else /*!HAVE_PLOTMM*/
 	pack_start(notebook);
 #endif /*HAVE_PLOTMM*/
+}
+
+void MainHBox::page_switched(GtkNotebookPage* p, guint n)
+{
+	switch (n)
+	{
+		case 0:
+			single_point_box.recalc();
+			break;
+		case 1:
+			saturation_box.recalc();
+			break;
+	}
 }
 
 MainWindow::MainWindow()
