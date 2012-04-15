@@ -5,7 +5,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.6 foreign dist-bzip2 subdir-objects])
 
 PKG_CHECK_MODULES([LIBH2OXX], [libh2oxx])
-PKG_CHECK_MODULES([GTKMM], [gtkmm-2.4 plotmm sigc++-2.0])
+PKG_CHECK_MODULES([GTKMM], [gtkmm-2.4 sigc++-2.0])
+PKG_CHECK_MODULES([PLOTMM], [plotmm])
 
 AC_PROG_CXX
 
