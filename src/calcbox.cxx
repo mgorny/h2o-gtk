@@ -23,12 +23,12 @@ enum functions
 
 FunctionChoiceComboBox::FunctionChoiceComboBox()
 {
-	append("f(p, T)");
-	append("f(p, h)");
-	append("f(p, s)");
-	append("f(p, x)");
-	append("f(T, x)");
-	append("f(h, s)");
+	append_text("f(p, T)");
+	append_text("f(p, h)");
+	append_text("f(p, s)");
+	append_text("f(p, x)");
+	append_text("f(T, x)");
+	append_text("f(h, s)");
 
 	set_active(0);
 }

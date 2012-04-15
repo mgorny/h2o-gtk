@@ -23,13 +23,13 @@
 
 PlotAxisChoice::PlotAxisChoice(int def)
 {
-	append("p");
-	append("T");
-	append("v");
-	append("u");
-	append("h");
-	append("s");
-	append("\317\201");
+	append_text("p");
+	append_text("T");
+	append_text("v");
+	append_text("u");
+	append_text("h");
+	append_text("s");
+	append_text("\317\201");
 
 	set_active(def);
 }
