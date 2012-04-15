@@ -8,6 +8,8 @@
 #ifndef _H2O_GTK_CALCBOX_HXX
 #define _H2O_GTK_CALCBOX_HXX 1
 
+#include "dataentrypair.hxx"
+
 #include <h2o>
 
 #include <sigc++/functors/mem_fun.h>
@@ -15,35 +17,12 @@
 #include <sigc++/signal.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/label.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/table.h>
 
 class FunctionChoiceComboBox : public Gtk::ComboBoxText
 {
 public:
 	FunctionChoiceComboBox();
-};
-
-class DataEntryPair : public Gtk::SpinButton
-{
-	double def_min, def_max;
-
-protected:
-	Gtk::Label label;
-	Gtk::Label unit_label;
-
-public:
-	DataEntryPair(const char* desc, const char* unit,
-			double min, double max, double step, double pagestep,
-			double decplaces, double val = 0);
-
-	void add_to_table(Gtk::Table& t, int row);
-	void remove_from_table(Gtk::Table& t);
-
-	void enable();
-	void disable();
-
-	void set_value(double newval);
 };
 
 class CalcBox : public Gtk::Table
