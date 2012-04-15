@@ -7,6 +7,8 @@
 #	include "config.h"
 #endif
 
+#ifdef HAVE_PLOTMM
+
 #include "plot.hxx"
 
 #include <h2o/region3.h>
@@ -300,3 +302,5 @@ void PlotBox::update_data_plot(h2o::H2O* data, int len)
 {
 	plot.plot_data(data, len);
 }
+
+#endif /*HAVE_PLOTMM*/

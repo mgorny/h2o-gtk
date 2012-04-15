@@ -8,6 +8,8 @@
 #ifndef _H2O_GTK_PLOT_HXX
 #define _H2O_GTK_PLOT_HXX 1
 
+#ifdef HAVE_PLOTMM
+
 #include <vector>
 
 #include <h2o>
@@ -125,5 +127,7 @@ public:
 
 	void update_data_plot(h2o::H2O* data, int len);
 };
+
+#endif /*HAVE_PLOTMM*/
 
 #endif /*_H2O_GTK_PLOT_HXX*/
