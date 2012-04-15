@@ -24,6 +24,8 @@ SaturationBox::SaturationBox()
 	p.add_to_table(*this, 0);
 	T.add_to_table(*this, 1);
 
+	attach(sep, 0, 3, 2, 3);
+
 	h1.add_to_table(*this, 3);
 	h2.add_to_table(*this, 4);
 	r.add_to_table(*this, 5);

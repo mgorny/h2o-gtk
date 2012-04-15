@@ -15,6 +15,7 @@
 #include <sigc++/functors/mem_fun.h>
 #include <sigc++/connection.h>
 #include <sigc++/signal.h>
+#include <gtkmm/separator.h>
 #include <gtkmm/table.h>
 
 class SaturationBox : public Gtk::Table
@@ -26,6 +27,7 @@ class SaturationBox : public Gtk::Table
 
 protected:
 	DataEntryPair p, T, h1, h2, r, s1, s2;
+	Gtk::HSeparator sep;
 	data_changed_sig data_changed;
 
 public:
