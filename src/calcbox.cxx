@@ -92,7 +92,7 @@ CalcBox::CalcBox()
 	h("_h", "kJ/kg", 0, 7500, 10, 200, 2),
 	s("_s", "kJ/kgK", 0, 28, 0.04, 0.2, 3),
 	x("_x", "[-]", 0, 1, 0.004, 0.02, 3),
-	func_label("_f", true)
+	func_label("_f", Gtk::ALIGN_END, Gtk::ALIGN_CENTER, true)
 {
 	set_col_spacings(10);
 
