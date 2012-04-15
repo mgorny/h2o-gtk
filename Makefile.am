@@ -3,6 +3,7 @@ bin_PROGRAMS = h2o-gtk
 h2o_gtk_SOURCES = src/main.cxx \
 	src/calcbox.cxx src/calcbox.hxx \
 	src/dataentrypair.cxx src/dataentrypair.hxx \
-	src/plot.cxx src/plot.hxx
+	src/plot.cxx src/plot.hxx \
+	src/saturationbox.cxx src/saturationbox.hxx
 h2o_gtk_CPPFLAGS = $(LIBH2OXX_CFLAGS) $(GTKMM_CFLAGS) $(PLOTMM_CFLAGS)
 h2o_gtk_LDADD = $(LIBH2OXX_LIBS) $(GTKMM_LIBS) $(PLOTMM_LIBS)

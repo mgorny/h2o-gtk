@@ -8,6 +8,7 @@
 #endif
 
 #include "calcbox.hxx"
+#include "saturationbox.hxx"
 #include "plot.hxx"
 
 #include <h2o>
@@ -27,6 +28,7 @@ protected:
 	Gtk::Notebook notebook;
 
 	CalcBox single_point_box;
+	SaturationBox saturation_box;
 
 public:
 	MainHBox();
@@ -46,14 +48,21 @@ MainHBox::MainHBox()
 {
 	set_spacing(10);
 
+	// recalc before bounding signals to avoid unnecessary plotting
+	saturation_box.recalc();
+
 #ifdef HAVE_PLOTMM
 	single_point_box.signal_data_changed().connect(
 			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
+	saturation_box.signal_data_changed().connect(
+			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
 #endif /*HAVE_PLOTMM*/
 
+	// recalc first tab last
 	single_point_box.recalc();
 
 	notebook.append_page(single_point_box, "Single point");
+	notebook.append_page(saturation_box, "Saturation");
 
 #ifdef HAVE_PLOTMM
 	pack_start(notebook, Gtk::PACK_SHRINK);
