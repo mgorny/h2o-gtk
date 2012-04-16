@@ -88,7 +88,7 @@ class Plot : public PlotMM::Plot
 
 protected:
 	Glib::RefPtr<SaturationCurve> saturation_curve;
-	Glib::RefPtr<DataCurve> data_curve, user_plot_curve;;
+	Glib::RefPtr<DataCurve> data_curve, user_plot_curve;
 
 public:
 	Plot();
