@@ -11,6 +11,7 @@
 
 #include "plot.hxx"
 
+#include <vector>
 #include <cassert>
 
 #include <gdkmm/color.h>
@@ -109,26 +110,31 @@ void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
 {
 	const int len = data.size();
 
-	double x[len], y[len];
+	std::vector<double> x, y;
 
-	int i, j;
+	int i;
 
-	for (i = 0, j = 0; i < len; ++i)
+	for (i = 0; i < len; ++i)
 	{
+		double xval, yval;
+
 		try
 		{
-			x[i] = (data[i].*x_prop)();
-			y[i] = (data[i].*y_prop)();
-			++j;
+			xval = (data[i].*x_prop)();
+			yval = (data[i].*y_prop)();
 		}
 		catch (std::runtime_error)
 		{
+			continue;
 		};
+
+		x.push_back(xval);
+		y.push_back(yval);
 	}
 
-	if (j > 0)
+	if (x.size() > 0)
 	{
-		set_data(x, y, j);
+		set_data(x, y);
 		set_enabled(true);
 	}
 	else
