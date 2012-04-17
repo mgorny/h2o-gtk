@@ -72,7 +72,7 @@ void SaturationCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 	const double Tmin = 273.15;
 	const double Tmax = 647.096;
 
-	const int len = Tmax - Tmin + 1;
+	const int len = 647 - 273;
 	double x[len*2+1], y[len*2+1];
 
 	int i;
