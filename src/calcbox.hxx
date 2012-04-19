@@ -43,6 +43,13 @@ class CalcBox : public Gtk::Table
 	typedef sigc::signal<void, h2o::H2O*, int>
 		data_changed_sig;
 
+	void remove_fields();
+	void reorder_fields();
+	void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
 protected:
 	FunctionChoiceComboBox func_chooser;
 	DataEntryPair p, T, v, u, h, s, x;
@@ -52,14 +59,7 @@ protected:
 public:
 	CalcBox();
 
-	void remove_fields();
-	void set_fields(DataEntryPair& in1, DataEntryPair& in2,
-			DataEntryPair& out1, DataEntryPair& out2,
-			DataEntryPair& out3, DataEntryPair& out4,
-			DataEntryPair& out5);
 	void recalc();
-	void reorder_fields();
-
 	data_changed_sig signal_data_changed();
 };
 
