@@ -11,16 +11,6 @@
 
 #include <stdexcept>
 
-enum functions
-{
-	f_pT = 0,
-	f_ph,
-	f_ps,
-	f_px,
-	f_Tx,
-	f_hs
-};
-
 FunctionChoiceComboBox::FunctionChoiceComboBox()
 {
 	append_text("f(p, T)");
@@ -31,6 +21,11 @@ FunctionChoiceComboBox::FunctionChoiceComboBox()
 	append_text("f(h, s)");
 
 	set_active(0);
+}
+
+enum Function FunctionChoiceComboBox::get_function()
+{
+	return static_cast<enum Function>(get_active_row_number());
 }
 
 CalcBox::CalcBox()
@@ -131,7 +126,7 @@ void CalcBox::recalc()
 
 	try
 	{
-		switch (func_chooser.get_active_row_number())
+		switch (func_chooser.get_function())
 		{
 			case f_pT:
 				medium = h2o::H2O(p.get_value(), T.get_value());
@@ -185,7 +180,7 @@ void CalcBox::recalc()
 		region_label.set_text("Not implemented");
 	};
 
-	switch (func_chooser.get_active_row_number())
+	switch (func_chooser.get_function())
 	{
 		case f_pT:
 			update_field(h, medium, &h2o::H2O::h);
@@ -237,7 +232,7 @@ void CalcBox::reorder_fields()
 {
 	remove_fields();
 
-	switch (func_chooser.get_active_row_number())
+	switch (func_chooser.get_function())
 	{
 		case f_pT:
 			set_fields(p, T, v, u, h, s, x);

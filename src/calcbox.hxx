@@ -19,10 +19,22 @@
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
 
+enum Function
+{
+	f_pT = 0,
+	f_ph,
+	f_ps,
+	f_px,
+	f_Tx,
+	f_hs
+};
+
 class FunctionChoiceComboBox : public Gtk::ComboBoxText
 {
 public:
 	FunctionChoiceComboBox();
+
+	enum Function get_function();
 };
 
 class CalcBox : public Gtk::Table
