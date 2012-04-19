@@ -15,6 +15,7 @@
 class DataEntryPair : public Gtk::SpinButton
 {
 	double def_min, def_max;
+	bool attached;
 
 protected:
 	Gtk::Label label;

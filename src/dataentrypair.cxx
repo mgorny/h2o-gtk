@@ -7,6 +7,8 @@
 #	include "config.h"
 #endif
 
+#include <cassert>
+
 #include "dataentrypair.hxx"
 
 DataEntryPair::DataEntryPair(const char* desc, const char* unit,
@@ -14,6 +16,7 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 			double decplaces, double val)
 	: Gtk::SpinButton(0, decplaces),
 	def_min(min), def_max(max),
+	attached(false),
 	label(desc, Gtk::ALIGN_END, Gtk::ALIGN_CENTER, true),
 	unit_label(unit, Gtk::ALIGN_START, Gtk::ALIGN_CENTER)
 {
@@ -24,16 +27,25 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 
 void DataEntryPair::add_to_table(Gtk::Table& t, int row)
 {
+	assert(!attached);
+
 	t.attach(label, 0, 1, row, row + 1);
 	t.attach(*this, 1, 2, row, row + 1);
 	t.attach(unit_label, 2, 3, row, row + 1);
+
+	attached = true;
 }
 
 void DataEntryPair::remove_from_table(Gtk::Table& t)
 {
-	t.remove(label);
-	t.remove(*this);
-	t.remove(unit_label);
+	if (attached)
+	{
+		t.remove(label);
+		t.remove(*this);
+		t.remove(unit_label);
+
+		attached = false;
+	}
 }
 
 void DataEntryPair::enable()
