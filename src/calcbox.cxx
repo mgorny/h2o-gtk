@@ -115,6 +115,16 @@ static inline void update_field(DataEntryPair& dest, h2o::H2O& medium, MediumPro
 	};
 }
 
+static const double scrit = 4.41202148223476; // [kJ/kgK]
+
+static inline void r3_preset_x(DataEntryPair& x, DataEntryPair& s)
+{
+	if (s.get_value() >= scrit)
+		x.set_readonly_value(1);
+	else
+		x.set_readonly_value(0);
+}
+
 void CalcBox::recalc()
 {
 	h2o::H2O medium;
@@ -180,16 +190,22 @@ void CalcBox::recalc()
 		case f_pT:
 			update_field(h, medium, &h2o::H2O::h);
 			update_field(s, medium, &h2o::H2O::s);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
 			break;
 		case f_ph:
 			update_field(T, medium, &h2o::H2O::T);
 			update_field(s, medium, &h2o::H2O::s);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
 			break;
 		case f_ps:
 			update_field(T, medium, &h2o::H2O::T);
 			update_field(h, medium, &h2o::H2O::h);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
 			break;
 		case f_px:
@@ -205,6 +221,8 @@ void CalcBox::recalc()
 		case f_hs:
 			update_field(p, medium, &h2o::H2O::p);
 			update_field(T, medium, &h2o::H2O::T);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
 			break;
 	}
