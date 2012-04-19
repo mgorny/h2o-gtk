@@ -26,7 +26,8 @@ enum Function
 	f_ps,
 	f_px,
 	f_Tx,
-	f_hs
+	f_hs,
+	f_rhoT
 };
 
 class FunctionChoiceComboBox : public Gtk::ComboBoxText
@@ -56,7 +57,7 @@ class DataInputOutput
 protected:
 	data_changed_sig data_changed;
 	FunctionChoiceComboBox func_chooser;
-	DataEntryPair p, T, v, u, h, s, x;
+	DataEntryPair p, T, v, u, h, s, x, rho;
 	Gtk::Label func_label, region_label;
 
 public:

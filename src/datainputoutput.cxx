@@ -19,6 +19,7 @@ FunctionChoiceComboBox::FunctionChoiceComboBox()
 	append_text("f(p, x)");
 	append_text("f(T, x)");
 	append_text("f(h, s)");
+	append_text("f(\317\201, T)");
 
 	set_active(0);
 }
@@ -37,6 +38,7 @@ DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row)
 	h("_h", "kJ/kg", 0, 7500, 10, 200, 2),
 	s("_s", "kJ/kgK", 0, 28, 0.04, 0.2, 3),
 	x("_x", "[-]", 0, 1, 0.004, 0.02, 3),
+	rho("\317\201", "kg/m\302\263", 0, 1050, 5, 40, 2),
 	func_label("_f", Gtk::ALIGN_END, Gtk::ALIGN_CENTER, true)
 {
 	func_label.set_mnemonic_widget(func_chooser);
@@ -66,6 +68,7 @@ void DataInputOutput::remove_fields()
 	h.remove_from_table(_parent);
 	s.remove_from_table(_parent);
 	x.remove_from_table(_parent);
+	rho.remove_from_table(_parent);
 }
 
 void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
@@ -147,6 +150,9 @@ void DataInputOutput::recalc()
 			case f_hs:
 				medium = h2o::H2O::hs(h.get_value(), s.get_value());
 				break;
+			case f_rhoT:
+				medium = h2o::H2O::rhoT(rho.get_value(), T.get_value());
+				break;
 		}
 
 		const char* label_text;
@@ -189,6 +195,7 @@ void DataInputOutput::recalc()
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
 			break;
 		case f_ph:
 			update_field(T, medium, &h2o::H2O::T);
@@ -196,6 +203,7 @@ void DataInputOutput::recalc()
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
 			break;
 		case f_ps:
 			update_field(T, medium, &h2o::H2O::T);
@@ -203,16 +211,19 @@ void DataInputOutput::recalc()
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
 			break;
 		case f_px:
 			update_field(T, medium, &h2o::H2O::T);
 			update_field(h, medium, &h2o::H2O::h);
 			update_field(s, medium, &h2o::H2O::s);
+			update_field(v, medium, &h2o::H2O::v);
 			break;
 		case f_Tx:
 			update_field(p, medium, &h2o::H2O::p);
 			update_field(h, medium, &h2o::H2O::h);
 			update_field(s, medium, &h2o::H2O::s);
+			update_field(v, medium, &h2o::H2O::v);
 			break;
 		case f_hs:
 			update_field(p, medium, &h2o::H2O::p);
@@ -220,10 +231,17 @@ void DataInputOutput::recalc()
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
 			break;
+		case f_rhoT:
+			update_field(p, medium, &h2o::H2O::p);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
 	}
 
-	update_field(v, medium, &h2o::H2O::v);
 	update_field(u, medium, &h2o::H2O::u);
 
 	data_changed.emit(&medium, 1);
@@ -252,6 +270,10 @@ void DataInputOutput::reorder_fields()
 			break;
 		case f_hs:
 			set_fields(h, s, p, T, v, u, x);
+			break;
+		case f_rhoT:
+			rho.set_value(1/v.get_value());
+			set_fields(rho, T, p, u, h, s, x);
 			break;
 	}
 

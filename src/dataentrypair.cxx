@@ -23,6 +23,10 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 	get_adjustment()->configure(val, min, max, step, pagestep, 0);
 
 	label.set_mnemonic_widget(*this);
+
+	show();
+	label.show();
+	unit_label.show();
 }
 
 void DataEntryPair::add_to_table(Gtk::Table& t, int row)
