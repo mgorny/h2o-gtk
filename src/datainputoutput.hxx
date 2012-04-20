@@ -100,7 +100,7 @@ protected:
 
 public:
 	LockedDataInputOutput(Gtk::Table& t, int first_row,
-			Function locked_func);
+			Function locked_func, double start_p = 10);
 
 	void set_controlled_value(double val);
 };

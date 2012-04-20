@@ -8,6 +8,7 @@
 #endif
 
 #include "calcbox.hxx"
+#include "expansionbox.hxx"
 #include "saturationbox.hxx"
 #include "plot.hxx"
 
@@ -29,6 +30,7 @@ protected:
 
 	CalcBox single_point_box;
 	SaturationBox saturation_box;
+	ExpansionBox expansion_box;
 
 public:
 	MainHBox();
@@ -54,10 +56,13 @@ MainHBox::MainHBox()
 			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
 	saturation_box.signal_data_changed().connect(
 			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
+	expansion_box.signal_data_changed().connect(
+			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
 #endif /*HAVE_PLOTMM*/
 
 	notebook.append_page(single_point_box, "Single point");
 	notebook.append_page(saturation_box, "Saturation");
+	notebook.append_page(expansion_box, "Expansion");
 
 	notebook.signal_switch_page().connect(
 			sigc::mem_fun(*this, &MainHBox::page_switched));
@@ -79,6 +84,9 @@ void MainHBox::page_switched(GtkNotebookPage* p, guint n)
 			break;
 		case 1:
 			saturation_box.recalc();
+			break;
+		case 2:
+			expansion_box.recalc();
 			break;
 	}
 }
