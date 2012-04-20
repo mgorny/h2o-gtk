@@ -63,6 +63,7 @@ protected:
 public:
 	DataInputOutput(Gtk::Table& t, int first_row);
 
+	h2o::H2O get_h2o();
 	void recalc();
 
 	data_changed_sig signal_data_changed();

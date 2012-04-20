@@ -124,36 +124,45 @@ static inline void r3_preset_x(DataEntryPair& x, DataEntryPair& s)
 		x.set_readonly_value(0);
 }
 
+h2o::H2O DataInputOutput::get_h2o()
+{
+	h2o::H2O medium;
+
+	switch (func_chooser.get_function())
+	{
+		case f_pT:
+			medium = h2o::H2O(p.get_value(), T.get_value());
+			break;
+		case f_ph:
+			medium = h2o::H2O::ph(p.get_value(), h.get_value());
+			break;
+		case f_ps:
+			medium = h2o::H2O::ps(p.get_value(), s.get_value());
+			break;
+		case f_px:
+			medium = h2o::H2O::px(p.get_value(), x.get_value());
+			break;
+		case f_Tx:
+			medium = h2o::H2O::Tx(T.get_value(), x.get_value());
+			break;
+		case f_hs:
+			medium = h2o::H2O::hs(h.get_value(), s.get_value());
+			break;
+		case f_rhoT:
+			medium = h2o::H2O::rhoT(rho.get_value(), T.get_value());
+			break;
+	}
+
+	return medium;
+}
+
 void DataInputOutput::recalc()
 {
 	h2o::H2O medium;
 
 	try
 	{
-		switch (func_chooser.get_function())
-		{
-			case f_pT:
-				medium = h2o::H2O(p.get_value(), T.get_value());
-				break;
-			case f_ph:
-				medium = h2o::H2O::ph(p.get_value(), h.get_value());
-				break;
-			case f_ps:
-				medium = h2o::H2O::ps(p.get_value(), s.get_value());
-				break;
-			case f_px:
-				medium = h2o::H2O::px(p.get_value(), x.get_value());
-				break;
-			case f_Tx:
-				medium = h2o::H2O::Tx(T.get_value(), x.get_value());
-				break;
-			case f_hs:
-				medium = h2o::H2O::hs(h.get_value(), s.get_value());
-				break;
-			case f_rhoT:
-				medium = h2o::H2O::rhoT(rho.get_value(), T.get_value());
-				break;
-		}
+		medium = get_h2o();
 
 		const char* label_text;
 		switch (medium.region())
