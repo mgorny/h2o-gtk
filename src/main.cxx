@@ -60,6 +60,7 @@ MainHBox::MainHBox()
 			sigc::mem_fun(plotbox, &PlotBox::update_data_plot));
 #endif /*HAVE_PLOTMM*/
 
+	notebook.set_scrollable();
 	notebook.append_page(single_point_box, "Single point");
 	notebook.append_page(saturation_box, "Saturation");
 	notebook.append_page(expansion_box, "Expansion");
