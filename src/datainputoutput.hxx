@@ -38,35 +38,71 @@ public:
 	enum Function get_function();
 };
 
-class DataInputOutput
+class DataInputBase
 {
 	sigc::connection conn1, conn2;
 	typedef sigc::signal<void, h2o::H2O*, int>
 		data_changed_sig;
 
-	Gtk::Table& _parent;
-	int _first_row;
-
 	void remove_fields();
-	void set_fields(DataEntryPair& in1, DataEntryPair& in2,
-			DataEntryPair& out1, DataEntryPair& out2,
-			DataEntryPair& out3, DataEntryPair& out4,
-			DataEntryPair& out5);
 	void reorder_fields();
 
 protected:
+	Gtk::Table& _parent;
+	int _first_row;
+
 	data_changed_sig data_changed;
 	FunctionChoiceComboBox func_chooser;
 	DataEntryPair p, T, v, u, h, s, x, rho;
 	Gtk::Label func_label, region_label;
 
-public:
-	DataInputOutput(Gtk::Table& t, int first_row);
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
 
+	DataInputBase(Gtk::Table& t, int first_row);
+
+public:
 	h2o::H2O get_h2o();
 	void recalc();
 
 	data_changed_sig signal_data_changed();
+};
+
+class DataInput : public DataInputBase
+{
+public:
+	DataInput(Gtk::Table& t, int first_row);
+};
+
+class DataInputOutput : public DataInputBase
+{
+protected:
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
+public:
+	DataInputOutput(Gtk::Table& t, int first_row);
+};
+
+class LockedDataInputOutput : public DataInputOutput
+{
+	DataEntryPair* controlled_entry;
+
+protected:
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
+public:
+	LockedDataInputOutput(Gtk::Table& t, int first_row,
+			Function locked_func);
+
+	void set_controlled_value(double val);
 };
 
 #endif /*_H2O_GTK_DATAINPUTOUTPUT_HXX*/

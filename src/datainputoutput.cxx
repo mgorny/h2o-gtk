@@ -29,7 +29,7 @@ enum Function FunctionChoiceComboBox::get_function()
 	return static_cast<enum Function>(get_active_row_number());
 }
 
-DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row)
+DataInputBase::DataInputBase(Gtk::Table& t, int first_row)
 	: _parent(t), _first_row(first_row),
 	p("_p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
 	T("_T", "K", 273.15, 2273.15, 1, 50, 2, 773.15),
@@ -45,17 +45,15 @@ DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row)
 	t.attach(func_label, 0, 1, first_row + 0, first_row + 1);
 	t.attach(func_chooser, 1, 2, first_row + 0, first_row + 1);
 
-	set_fields(p, T, v, u, h, s, x);
-
 	region_label.set_padding(0, 10);
 	region_label.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_END);
 	t.attach(region_label, 0, 3, first_row + 3, first_row + 4);
 
 	func_chooser.signal_changed().connect(
-			sigc::mem_fun(*this, &DataInputOutput::reorder_fields));
+			sigc::mem_fun(*this, &DataInputBase::reorder_fields));
 }
 
-void DataInputOutput::remove_fields()
+void DataInputBase::remove_fields()
 {
 	conn1.disconnect();
 	conn2.disconnect();
@@ -71,7 +69,7 @@ void DataInputOutput::remove_fields()
 	rho.remove_from_table(_parent);
 }
 
-void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+void DataInputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out1, DataEntryPair& out2,
 		DataEntryPair& out3, DataEntryPair& out4,
 		DataEntryPair& out5)
@@ -82,20 +80,9 @@ void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	in2.enable();
 
 	conn1 = in1.signal_value_changed().connect(
-			sigc::mem_fun(*this, &DataInputOutput::recalc));
+			sigc::mem_fun(*this, &DataInputBase::recalc));
 	conn2 = in2.signal_value_changed().connect(
-			sigc::mem_fun(*this, &DataInputOutput::recalc));
-
-	out1.add_to_table(_parent, _first_row + 4);
-	out2.add_to_table(_parent, _first_row + 5);
-	out3.add_to_table(_parent, _first_row + 6);
-	out4.add_to_table(_parent, _first_row + 7);
-	out5.add_to_table(_parent, _first_row + 8);
-	out1.disable();
-	out2.disable();
-	out3.disable();
-	out4.disable();
-	out5.disable();
+			sigc::mem_fun(*this, &DataInputBase::recalc));
 }
 
 typedef double (h2o::H2O::*MediumProperty)() const;
@@ -124,7 +111,7 @@ static inline void r3_preset_x(DataEntryPair& x, DataEntryPair& s)
 		x.set_readonly_value(0);
 }
 
-h2o::H2O DataInputOutput::get_h2o()
+h2o::H2O DataInputBase::get_h2o()
 {
 	h2o::H2O medium;
 
@@ -156,7 +143,7 @@ h2o::H2O DataInputOutput::get_h2o()
 	return medium;
 }
 
-void DataInputOutput::recalc()
+void DataInputBase::recalc()
 {
 	h2o::H2O medium;
 
@@ -256,7 +243,7 @@ void DataInputOutput::recalc()
 	data_changed.emit(&medium, 1);
 }
 
-void DataInputOutput::reorder_fields()
+void DataInputBase::reorder_fields()
 {
 	remove_fields();
 
@@ -289,7 +276,65 @@ void DataInputOutput::reorder_fields()
 	recalc();
 }
 
-DataInputOutput::data_changed_sig DataInputOutput::signal_data_changed()
+DataInputBase::data_changed_sig DataInputBase::signal_data_changed()
 {
 	return data_changed;
+}
+
+DataInput::DataInput(Gtk::Table& t, int first_row)
+	: DataInputBase(t, first_row)
+{
+	set_fields(p, T, v, u, h, s, x);
+}
+
+DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row)
+	: DataInputBase(t, first_row)
+{
+	set_fields(p, T, v, u, h, s, x);
+}
+
+void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	DataInputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+
+	out1.add_to_table(_parent, _first_row + 4);
+	out2.add_to_table(_parent, _first_row + 5);
+	out3.add_to_table(_parent, _first_row + 6);
+	out4.add_to_table(_parent, _first_row + 7);
+	out5.add_to_table(_parent, _first_row + 8);
+	out1.disable();
+	out2.disable();
+	out3.disable();
+	out4.disable();
+	out5.disable();
+}
+
+LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
+		Function locked_func)
+	: DataInputOutput(t, first_row - 1)
+{
+	_parent.remove(func_label);
+	_parent.remove(func_chooser);
+
+	func_chooser.set_active(locked_func);
+}
+
+void LockedDataInputOutput::set_fields(
+		DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	DataInputOutput::set_fields(in1, in2, out1, out2, out3, out4, out5);
+
+	in2.disable();
+	controlled_entry = &in2;
+}
+
+void LockedDataInputOutput::set_controlled_value(double val)
+{
+	controlled_entry->set_readonly_value(val);
 }
