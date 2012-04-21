@@ -9,6 +9,7 @@
 
 #include "datainputoutput.hxx"
 
+#include <cassert>
 #include <stdexcept>
 
 FunctionChoiceComboBox::FunctionChoiceComboBox()
@@ -183,61 +184,6 @@ void DataInputBase::recalc()
 		region_label.set_text("Not implemented");
 	};
 
-	switch (func_chooser.get_function())
-	{
-		case f_pT:
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
-			if (medium.region() == 3)
-				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
-			break;
-		case f_ph:
-			update_field(T, medium, &h2o::H2O::T);
-			update_field(s, medium, &h2o::H2O::s);
-			if (medium.region() == 3)
-				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
-			break;
-		case f_ps:
-			update_field(T, medium, &h2o::H2O::T);
-			update_field(h, medium, &h2o::H2O::h);
-			if (medium.region() == 3)
-				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
-			break;
-		case f_px:
-			update_field(T, medium, &h2o::H2O::T);
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
-			update_field(v, medium, &h2o::H2O::v);
-			break;
-		case f_Tx:
-			update_field(p, medium, &h2o::H2O::p);
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
-			update_field(v, medium, &h2o::H2O::v);
-			break;
-		case f_hs:
-			update_field(p, medium, &h2o::H2O::p);
-			update_field(T, medium, &h2o::H2O::T);
-			if (medium.region() == 3)
-				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
-			break;
-		case f_rhoT:
-			update_field(p, medium, &h2o::H2O::p);
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
-			if (medium.region() == 3)
-				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-	}
-
 	update_field(u, medium, &h2o::H2O::u);
 
 	data_changed.emit(&medium, 1);
@@ -290,6 +236,9 @@ DataInput::DataInput(Gtk::Table& t, int first_row)
 DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row)
 	: DataInputBase(t, first_row)
 {
+	signal_data_changed().connect(
+			sigc::mem_fun(*this, &DataInputOutput::recalc_for));
+
 	set_fields(p, T, v, u, h, s, x);
 }
 
@@ -310,6 +259,68 @@ void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	out3.disable();
 	out4.disable();
 	out5.disable();
+}
+
+void DataInputOutput::recalc_for(h2o::H2O* data, int len)
+{
+	assert(len == 1);
+
+	h2o::H2O& medium = data[0];
+
+	switch (func_chooser.get_function())
+	{
+		case f_pT:
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
+			break;
+		case f_ph:
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(s, medium, &h2o::H2O::s);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
+			break;
+		case f_ps:
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(h, medium, &h2o::H2O::h);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
+			break;
+		case f_px:
+			update_field(T, medium, &h2o::H2O::T);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
+			update_field(v, medium, &h2o::H2O::v);
+			break;
+		case f_Tx:
+			update_field(p, medium, &h2o::H2O::p);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
+			update_field(v, medium, &h2o::H2O::v);
+			break;
+		case f_hs:
+			update_field(p, medium, &h2o::H2O::p);
+			update_field(T, medium, &h2o::H2O::T);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
+			update_field(v, medium, &h2o::H2O::v);
+			break;
+		case f_rhoT:
+			update_field(p, medium, &h2o::H2O::p);
+			update_field(h, medium, &h2o::H2O::h);
+			update_field(s, medium, &h2o::H2O::s);
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
+	}
 }
 
 LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
