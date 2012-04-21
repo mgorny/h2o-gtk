@@ -92,6 +92,7 @@ public:
 class LockedDataInputOutput : public DataInputOutput
 {
 	DataEntryPair* controlled_entry;
+	DataEntryPair* user_entry;
 
 protected:
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
@@ -103,6 +104,7 @@ public:
 	LockedDataInputOutput(Gtk::Table& t, int first_row,
 			Function locked_func, double start_p = 10);
 
+	void set_user_value_range(double min, double max);
 	void set_controlled_value(double val);
 };
 

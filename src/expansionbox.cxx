@@ -33,6 +33,7 @@ void ExpansionBox::input_changed(h2o::H2O* data, int len)
 
 	cached_input = data[0];
 
+	out_io.set_user_value_range(1E-3, cached_input.p());
 	out_io.set_controlled_value(cached_input.s());
 }
 
