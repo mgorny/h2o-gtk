@@ -156,13 +156,13 @@ void DataInputBase::recalc()
 		switch (medium.region())
 		{
 			case 1:
-				label_text = "Region 1 (saturated water)";
+				label_text = "Region 1 (sat. water)";
 				break;
 			case 2:
 				label_text = "Region 2 (dry steam)";
 				break;
 			case 3:
-				label_text = "Region 3 (supercritical)";
+				label_text = "Region 3 (supercrit.)";
 				break;
 			case 4:
 				label_text = "Region 4 (wet steam)";
@@ -171,7 +171,7 @@ void DataInputBase::recalc()
 				label_text = "Region 5 (dry steam)";
 				break;
 			default:
-				label_text = "Region unknown/invalid";
+				label_text = "Region unknown";
 		}
 		region_label.set_text(label_text);
 	}
