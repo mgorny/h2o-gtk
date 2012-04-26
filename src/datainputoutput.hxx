@@ -38,7 +38,7 @@ public:
 	enum Function get_function();
 };
 
-class DataInputBase
+class DataIOBase
 {
 	sigc::connection conn1, conn2;
 	typedef sigc::signal<void, h2o::H2O*, int>
@@ -61,7 +61,7 @@ protected:
 			DataEntryPair& out3, DataEntryPair& out4,
 			DataEntryPair& out5);
 
-	DataInputBase(Gtk::Table& t, int first_row, int first_col);
+	DataIOBase(Gtk::Table& t, int first_row, int first_col);
 
 public:
 	h2o::H2O get_h2o();
@@ -70,13 +70,35 @@ public:
 	data_changed_sig signal_data_changed();
 };
 
+class DataInputBase : virtual public DataIOBase
+{
+protected:
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
+	DataInputBase(Gtk::Table& t, int first_row, int first_col = 0);
+};
+
 class DataInput : public DataInputBase
 {
 public:
 	DataInput(Gtk::Table& t, int first_row, int first_col = 0);
 };
 
-class DataInputOutput : public DataInputBase
+class DataOutputBase : virtual public DataIOBase
+{
+protected:
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
+	DataOutputBase(Gtk::Table& t, int first_row, int first_col = 0);
+};
+
+class DataInputOutput : public DataInputBase, public DataOutputBase
 {
 protected:
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,

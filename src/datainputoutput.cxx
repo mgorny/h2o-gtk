@@ -30,7 +30,7 @@ enum Function FunctionChoiceComboBox::get_function()
 	return static_cast<enum Function>(get_active_row_number());
 }
 
-DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
+DataIOBase::DataIOBase(Gtk::Table& t, int first_row, int first_col)
 	: _parent(t), _first_row(first_row), _first_col(first_col),
 	p("_p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
 	T("_T", "K", 273.15, 2273.15, 1, 50, 2, 773.15),
@@ -46,15 +46,11 @@ DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
 	t.attach(func_label, 0, 1, first_row + 0, first_row + 1);
 	t.attach(func_chooser, 1, 2, first_row + 0, first_row + 1);
 
-	region_label.set_padding(0, 10);
-	region_label.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_END);
-	t.attach(region_label, first_col, first_col + 3, first_row + 3, first_row + 4);
-
 	func_chooser.signal_changed().connect(
-			sigc::mem_fun(*this, &DataInputBase::reorder_fields));
+			sigc::mem_fun(*this, &DataIOBase::reorder_fields));
 }
 
-void DataInputBase::remove_fields()
+void DataIOBase::remove_fields()
 {
 	conn1.disconnect();
 	conn2.disconnect();
@@ -70,20 +66,15 @@ void DataInputBase::remove_fields()
 	rho.remove_from_table(_parent);
 }
 
-void DataInputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+void DataIOBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out1, DataEntryPair& out2,
 		DataEntryPair& out3, DataEntryPair& out4,
 		DataEntryPair& out5)
 {
-	in1.add_to_table(_parent, _first_row + 1, _first_col);
-	in2.add_to_table(_parent, _first_row + 2, _first_col);
-	in1.enable();
-	in2.enable();
-
 	conn1 = in1.signal_value_changed().connect(
-			sigc::mem_fun(*this, &DataInputBase::recalc));
+			sigc::mem_fun(*this, &DataIOBase::recalc));
 	conn2 = in2.signal_value_changed().connect(
-			sigc::mem_fun(*this, &DataInputBase::recalc));
+			sigc::mem_fun(*this, &DataIOBase::recalc));
 }
 
 typedef double (h2o::H2O::*MediumProperty)() const;
@@ -112,7 +103,7 @@ static inline void r3_preset_x(DataEntryPair& x, DataEntryPair& s)
 		x.set_readonly_value(0);
 }
 
-h2o::H2O DataInputBase::get_h2o()
+h2o::H2O DataIOBase::get_h2o()
 {
 	h2o::H2O medium;
 
@@ -144,7 +135,7 @@ h2o::H2O DataInputBase::get_h2o()
 	return medium;
 }
 
-void DataInputBase::recalc()
+void DataIOBase::recalc()
 {
 	h2o::H2O medium;
 
@@ -187,7 +178,7 @@ void DataInputBase::recalc()
 	data_changed.emit(&medium, 1);
 }
 
-void DataInputBase::reorder_fields()
+void DataIOBase::reorder_fields()
 {
 	remove_fields();
 
@@ -220,19 +211,65 @@ void DataInputBase::reorder_fields()
 	recalc();
 }
 
-DataInputBase::data_changed_sig DataInputBase::signal_data_changed()
+DataIOBase::data_changed_sig DataIOBase::signal_data_changed()
 {
 	return data_changed;
 }
 
+void DataInputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	DataIOBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+
+	in1.add_to_table(_parent, _first_row + 1, _first_col);
+	in2.add_to_table(_parent, _first_row + 2, _first_col);
+	in1.enable();
+	in2.enable();
+}
+
+DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
+	: DataIOBase(t, first_row, first_col)
+{
+}
+
 DataInput::DataInput(Gtk::Table& t, int first_row, int first_col)
-	: DataInputBase(t, first_row, first_col)
+	: DataIOBase(t, first_row, first_col),
+	DataInputBase(t, first_row, first_col)
 {
 	set_fields(p, T, v, u, h, s, x);
 }
 
+void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	out1.add_to_table(_parent, _first_row + 4, _first_col);
+	out2.add_to_table(_parent, _first_row + 5, _first_col);
+	out3.add_to_table(_parent, _first_row + 6, _first_col);
+	out4.add_to_table(_parent, _first_row + 7, _first_col);
+	out5.add_to_table(_parent, _first_row + 8, _first_col);
+	out1.disable();
+	out2.disable();
+	out3.disable();
+	out4.disable();
+	out5.disable();
+}
+
+DataOutputBase::DataOutputBase(Gtk::Table& t, int first_row, int first_col)
+	: DataIOBase(t, first_row, first_col)
+{
+	region_label.set_padding(0, 10);
+	region_label.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_END);
+	t.attach(region_label, first_col, first_col + 3, first_row + 3, first_row + 4);
+}
+
 DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row, int first_col)
-	: DataInputBase(t, first_row, first_col)
+	: DataIOBase(t, first_row, first_col),
+	DataInputBase(t, first_row, first_col),
+	DataOutputBase(t, first_row, first_col)
 {
 	signal_data_changed().connect(
 			sigc::mem_fun(*this, &DataInputOutput::recalc_for));
@@ -246,17 +283,7 @@ void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out5)
 {
 	DataInputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
-
-	out1.add_to_table(_parent, _first_row + 4, _first_col);
-	out2.add_to_table(_parent, _first_row + 5, _first_col);
-	out3.add_to_table(_parent, _first_row + 6, _first_col);
-	out4.add_to_table(_parent, _first_row + 7, _first_col);
-	out5.add_to_table(_parent, _first_row + 8, _first_col);
-	out1.disable();
-	out2.disable();
-	out3.disable();
-	out4.disable();
-	out5.disable();
+	DataOutputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
 }
 
 void DataInputOutput::recalc_for(h2o::H2O* data, int len)
@@ -325,7 +352,8 @@ void DataInputOutput::recalc_for(h2o::H2O* data, int len)
 
 LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
 		Function locked_func, double start_p, int first_col)
-	: DataInputOutput(t, first_row - 1, first_col)
+	: DataIOBase(t, first_row - 1, first_col),
+	DataInputOutput(t, first_row - 1, first_col)
 {
 	_parent.remove(func_label);
 	_parent.remove(func_chooser);
