@@ -42,10 +42,6 @@ DataIOBase::DataIOBase(Gtk::Table& t, int first_row, int first_col)
 	rho("\317\201", "kg/m\302\263", 0, 1050, 5, 40, 2),
 	func_label("_f", Gtk::ALIGN_END, Gtk::ALIGN_CENTER, true)
 {
-	func_label.set_mnemonic_widget(func_chooser);
-	t.attach(func_label, 0, 1, first_row + 0, first_row + 1);
-	t.attach(func_chooser, 1, 2, first_row + 0, first_row + 1);
-
 	func_chooser.signal_changed().connect(
 			sigc::mem_fun(*this, &DataIOBase::reorder_fields));
 }
@@ -207,6 +203,9 @@ void DataInputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
 	: DataIOBase(t, first_row, first_col)
 {
+	func_label.set_mnemonic_widget(func_chooser);
+	t.attach(func_label, 0, 1, first_row + 0, first_row + 1);
+	t.attach(func_chooser, 1, 2, first_row + 0, first_row + 1);
 }
 
 DataInput::DataInput(Gtk::Table& t, int first_row, int first_col)
