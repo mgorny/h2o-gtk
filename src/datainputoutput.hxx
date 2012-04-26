@@ -89,6 +89,8 @@ public:
 
 class DataOutputBase : virtual public DataIOBase
 {
+	void recalc_for(h2o::H2O* data, int len);
+
 protected:
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
 			DataEntryPair& out1, DataEntryPair& out2,
@@ -105,7 +107,6 @@ protected:
 			DataEntryPair& out1, DataEntryPair& out2,
 			DataEntryPair& out3, DataEntryPair& out4,
 			DataEntryPair& out5);
-	void recalc_for(h2o::H2O* data, int len);
 
 public:
 	DataInputOutput(Gtk::Table& t, int first_row, int first_col = 0);
