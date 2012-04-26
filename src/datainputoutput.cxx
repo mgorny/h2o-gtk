@@ -142,37 +142,12 @@ void DataIOBase::recalc()
 	try
 	{
 		medium = get_h2o();
-
-		const char* label_text;
-		switch (medium.region())
-		{
-			case 1:
-				label_text = "Region 1 (sat. water)";
-				break;
-			case 2:
-				label_text = "Region 2 (dry steam)";
-				break;
-			case 3:
-				label_text = "Region 3 (supercrit.)";
-				break;
-			case 4:
-				label_text = "Region 4 (wet steam)";
-				break;
-			case 5:
-				label_text = "Region 5 (dry steam)";
-				break;
-			default:
-				label_text = "Region unknown";
-		}
-		region_label.set_text(label_text);
 	}
 	catch (std::range_error)
 	{
-		region_label.set_text("Out-of-range");
 	}
 	catch (std::runtime_error)
 	{
-		region_label.set_text("Not implemented");
 	};
 
 	data_changed.emit(&medium, 1);
@@ -314,29 +289,92 @@ void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	out2.add_to_table(_parent, _first_row + 5, _first_col);
 	out3.add_to_table(_parent, _first_row + 6, _first_col);
 	out4.add_to_table(_parent, _first_row + 7, _first_col);
-	out5.add_to_table(_parent, _first_row + 8, _first_col);
 	out1.disable();
 	out2.disable();
 	out3.disable();
 	out4.disable();
-	out5.disable();
 }
 
 DataOutputBase::DataOutputBase(Gtk::Table& t, int first_row, int first_col)
 	: DataIOBase(t, first_row, first_col)
+{
+	signal_data_changed().connect(
+			sigc::mem_fun(*this, &DataOutputBase::recalc_for));
+}
+
+void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
+{
+	assert(len == 1);
+
+	h2o::H2O& medium = data[0];
+
+	const char* label_text;
+	switch (medium.region())
+	{
+		case 1:
+			label_text = "Region 1 (sat. water)";
+			break;
+		case 2:
+			label_text = "Region 2 (dry steam)";
+			break;
+		case 3:
+			label_text = "Region 3 (supercrit.)";
+			break;
+		case 4:
+			label_text = "Region 4 (wet steam)";
+			break;
+		case 5:
+			label_text = "Region 5 (dry steam)";
+			break;
+		default:
+			label_text = "Out-of-rnage";
+	}
+	region_label.set_text(label_text);
+
+	switch (func_chooser.get_function())
+	{
+		case f_pT:
+		case f_ph:
+		case f_ps:
+		case f_hs:
+		case f_rhoT:
+			if (medium.region() == 3)
+				r3_preset_x(x, s);
+			update_field(x, medium, &h2o::H2O::x);
+			break;
+		case f_px:
+		case f_Tx:
+			break;
+	}
+}
+
+void DataOutputWithRegion::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	DataOutputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+
+	out5.add_to_table(_parent, _first_row + 8, _first_col);
+	out5.disable();
+}
+
+DataOutputWithRegion::DataOutputWithRegion(Gtk::Table& t, int first_row, int first_col)
+	: DataIOBase(t, first_row, first_col),
+	DataOutputBase(t, first_row, first_col)
 {
 	region_label.set_padding(0, 10);
 	region_label.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_END);
 	t.attach(region_label, first_col, first_col + 3, first_row + 3, first_row + 4);
 
 	signal_data_changed().connect(
-			sigc::mem_fun(*this, &DataOutputBase::recalc_for));
+			sigc::mem_fun(*this, &DataOutputWithRegion::recalc_for));
 }
 
 DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row, int first_col)
 	: DataIOBase(t, first_row, first_col),
 	DataInputBase(t, first_row, first_col),
-	DataOutputBase(t, first_row, first_col)
+	DataOutputWithRegion(t, first_row, first_col)
 {
 	set_fields(p, T, v, u, h, s, x);
 }
@@ -347,7 +385,7 @@ void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out5)
 {
 	DataInputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
-	DataOutputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+	DataOutputWithRegion::set_fields(in1, in2, out1, out2, out3, out4, out5);
 }
 
 LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,

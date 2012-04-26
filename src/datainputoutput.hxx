@@ -54,7 +54,7 @@ protected:
 	data_changed_sig data_changed;
 	FunctionChoiceComboBox func_chooser;
 	DataEntryPair p, T, v, u, h, s, x, rho;
-	Gtk::Label func_label, region_label;
+	Gtk::Label func_label;
 
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
 			DataEntryPair& out1, DataEntryPair& out2,
@@ -100,7 +100,22 @@ protected:
 	DataOutputBase(Gtk::Table& t, int first_row, int first_col = 0);
 };
 
-class DataInputOutput : public DataInputBase, public DataOutputBase
+class DataOutputWithRegion : public DataOutputBase
+{
+	void recalc_for(h2o::H2O* data, int len);
+
+protected:
+	Gtk::Label region_label;
+
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
+	DataOutputWithRegion(Gtk::Table& t, int first_row, int first_col = 0);
+};
+
+class DataInputOutput : public DataInputBase, public DataOutputWithRegion
 {
 protected:
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
