@@ -169,10 +169,10 @@ void DataIOBase::reorder_fields()
 			set_fields(p, s, T, v, u, h, x);
 			break;
 		case f_px:
-			set_fields(p, x, T, v, u, h, s);
+			set_fields(p, x, v, u, h, s, T);
 			break;
 		case f_Tx:
-			set_fields(T, x, p, v, u, h, s);
+			set_fields(T, x, v, u, h, s, p);
 			break;
 		case f_hs:
 			set_fields(h, s, p, T, v, u, x);
