@@ -184,8 +184,6 @@ void DataInputBase::recalc()
 		region_label.set_text("Not implemented");
 	};
 
-	update_field(u, medium, &h2o::H2O::u);
-
 	data_changed.emit(&medium, 1);
 }
 
@@ -321,6 +319,8 @@ void DataInputOutput::recalc_for(h2o::H2O* data, int len)
 				r3_preset_x(x, s);
 			update_field(x, medium, &h2o::H2O::x);
 	}
+
+	update_field(u, medium, &h2o::H2O::u);
 }
 
 LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
