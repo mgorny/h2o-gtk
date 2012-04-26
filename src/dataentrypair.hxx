@@ -26,7 +26,7 @@ public:
 			double min, double max, double step, double pagestep,
 			double decplaces, double val = 0);
 
-	void add_to_table(Gtk::Table& t, int row);
+	void add_to_table(Gtk::Table& t, int row, int col = 0);
 	void remove_from_table(Gtk::Table& t);
 
 	void enable();

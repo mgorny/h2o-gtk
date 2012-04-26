@@ -29,13 +29,13 @@ DataEntryPair::DataEntryPair(const char* desc, const char* unit,
 	unit_label.show();
 }
 
-void DataEntryPair::add_to_table(Gtk::Table& t, int row)
+void DataEntryPair::add_to_table(Gtk::Table& t, int row, int col)
 {
 	assert(!attached);
 
-	t.attach(label, 0, 1, row, row + 1);
-	t.attach(*this, 1, 2, row, row + 1);
-	t.attach(unit_label, 2, 3, row, row + 1);
+	t.attach(label, col, col + 1, row, row + 1);
+	t.attach(*this, col + 1, col + 2, row, row + 1);
+	t.attach(unit_label, col + 2, col + 3, row, row + 1);
 
 	attached = true;
 }

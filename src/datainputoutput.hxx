@@ -49,7 +49,7 @@ class DataInputBase
 
 protected:
 	Gtk::Table& _parent;
-	int _first_row;
+	int _first_row, _first_col;
 
 	data_changed_sig data_changed;
 	FunctionChoiceComboBox func_chooser;
@@ -61,7 +61,7 @@ protected:
 			DataEntryPair& out3, DataEntryPair& out4,
 			DataEntryPair& out5);
 
-	DataInputBase(Gtk::Table& t, int first_row);
+	DataInputBase(Gtk::Table& t, int first_row, int first_col);
 
 public:
 	h2o::H2O get_h2o();
@@ -73,7 +73,7 @@ public:
 class DataInput : public DataInputBase
 {
 public:
-	DataInput(Gtk::Table& t, int first_row);
+	DataInput(Gtk::Table& t, int first_row, int first_col = 0);
 };
 
 class DataInputOutput : public DataInputBase
@@ -86,7 +86,7 @@ protected:
 	void recalc_for(h2o::H2O* data, int len);
 
 public:
-	DataInputOutput(Gtk::Table& t, int first_row);
+	DataInputOutput(Gtk::Table& t, int first_row, int first_col = 0);
 };
 
 class LockedDataInputOutput : public DataInputOutput
@@ -102,7 +102,7 @@ protected:
 
 public:
 	LockedDataInputOutput(Gtk::Table& t, int first_row,
-			Function locked_func, double start_p = 10);
+			Function locked_func, double start_p = 10, int first_col = 0);
 
 	void set_user_value_range(double min, double max);
 	void set_controlled_value(double val);
