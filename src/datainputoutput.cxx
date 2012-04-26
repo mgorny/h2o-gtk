@@ -389,7 +389,7 @@ void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 }
 
 LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
-		Function locked_func, double start_p, int first_col)
+		Function locked_func, double start_uval, int first_col)
 	: DataIOBase(t, first_row - 1, first_col),
 	DataInputOutput(t, first_row - 1, first_col)
 {
@@ -397,7 +397,7 @@ LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
 	_parent.remove(func_chooser);
 
 	func_chooser.set_active(locked_func);
-	user_entry->set_value(start_p);
+	user_entry->set_value(start_uval);
 }
 
 void LockedDataInputOutput::set_fields(

@@ -140,7 +140,8 @@ protected:
 
 public:
 	LockedDataInputOutput(Gtk::Table& t, int first_row,
-			Function locked_func, double start_p = 10, int first_col = 0);
+			Function locked_func, double start_uval = 10,
+			int first_col = 0);
 
 	void set_user_value_range(double min, double max);
 	void set_controlled_value(double val);
