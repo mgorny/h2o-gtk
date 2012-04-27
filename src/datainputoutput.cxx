@@ -30,8 +30,8 @@ enum Function FunctionChoiceComboBox::get_function()
 	return static_cast<enum Function>(get_active_row_number());
 }
 
-DataIOBase::DataIOBase(Gtk::Table& t, int first_row, int first_col)
-	: _parent(t), _first_row(first_row), _first_col(first_col),
+DataIOBase::DataIOBase(Gtk::Table& t)
+	: _parent(t),
 	p("_p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
 	T("_T", "K", 273.15, 2273.15, 1, 50, 2, 773.15),
 	v("_v", "m³/kg", 0, 1E17, 0.01, 1, 6),
@@ -201,15 +201,16 @@ void DataInputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 }
 
 DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
-	: DataIOBase(t, first_row, first_col)
+	: DataIOBase(t), _first_row(first_row), _first_col(first_col)
 {
+
 	func_label.set_mnemonic_widget(func_chooser);
 	t.attach(func_label, 0, 1, first_row + 0, first_row + 1);
 	t.attach(func_chooser, 1, 2, first_row + 0, first_row + 1);
 }
 
 DataInput::DataInput(Gtk::Table& t, int first_row, int first_col)
-	: DataIOBase(t, first_row, first_col),
+	: DataIOBase(t),
 	DataInputBase(t, first_row, first_col)
 {
 	set_fields(p, T, v, u, h, s, x);
@@ -295,7 +296,7 @@ void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 }
 
 DataOutputBase::DataOutputBase(Gtk::Table& t, int first_row, int first_col)
-	: DataIOBase(t, first_row, first_col)
+	: DataIOBase(t), _first_row(first_row), _first_col(first_col)
 {
 	signal_data_changed().connect(
 			sigc::mem_fun(*this, &DataOutputBase::recalc_for));
@@ -332,7 +333,7 @@ DataOutput::DataOutput(Gtk::Table& t, int first_row,
 		Function locked_func,
 		double start_val1, double start_val2,
 		int first_col)
-	: DataIOBase(t, first_row - 4, first_col),
+	: DataIOBase(t),
 	DataOutputBase(t, first_row - 4, first_col)
 {
 	set_fields(p, T, v, u, h, s, x);
@@ -400,7 +401,7 @@ void DataOutputWithRegion::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 }
 
 DataOutputWithRegion::DataOutputWithRegion(Gtk::Table& t, int first_row, int first_col)
-	: DataIOBase(t, first_row, first_col),
+	: DataIOBase(t),
 	DataOutputBase(t, first_row, first_col)
 {
 	region_label.set_padding(0, 10);
@@ -412,7 +413,7 @@ DataOutputWithRegion::DataOutputWithRegion(Gtk::Table& t, int first_row, int fir
 }
 
 DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row, int first_col)
-	: DataIOBase(t, first_row, first_col),
+	: DataIOBase(t),
 	DataInputBase(t, first_row, first_col),
 	DataOutputWithRegion(t, first_row, first_col)
 {
@@ -430,7 +431,7 @@ void DataInputOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 
 LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
 		Function locked_func, double start_uval, int first_col)
-	: DataIOBase(t, first_row - 1, first_col),
+	: DataIOBase(t),
 	DataInputOutput(t, first_row - 1, first_col)
 {
 	_parent.remove(func_label);

@@ -49,7 +49,6 @@ class DataIOBase
 
 protected:
 	Gtk::Table& _parent;
-	int _first_row, _first_col;
 
 	data_changed_sig data_changed;
 	FunctionChoiceComboBox func_chooser;
@@ -61,7 +60,7 @@ protected:
 			DataEntryPair& out3, DataEntryPair& out4,
 			DataEntryPair& out5);
 
-	DataIOBase(Gtk::Table& t, int first_row, int first_col);
+	DataIOBase(Gtk::Table& t);
 
 public:
 	h2o::H2O get_h2o();
@@ -73,6 +72,8 @@ public:
 class DataInputBase : virtual public DataIOBase
 {
 protected:
+	int _first_row, _first_col;
+
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
 			DataEntryPair& out1, DataEntryPair& out2,
 			DataEntryPair& out3, DataEntryPair& out4,
@@ -92,6 +93,8 @@ class DataOutputBase : virtual public DataIOBase
 	void recalc_for(h2o::H2O* data, int len);
 
 protected:
+	int _first_row, _first_col;
+
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
 			DataEntryPair& out1, DataEntryPair& out2,
 			DataEntryPair& out3, DataEntryPair& out4,
