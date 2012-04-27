@@ -285,10 +285,10 @@ void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out3, DataEntryPair& out4,
 		DataEntryPair& out5)
 {
-	out1.add_to_table(_parent, _first_row + 4, _first_col);
-	out2.add_to_table(_parent, _first_row + 5, _first_col);
-	out3.add_to_table(_parent, _first_row + 6, _first_col);
-	out4.add_to_table(_parent, _first_row + 7, _first_col);
+	out1.add_to_table(_parent, _first_row, _first_col);
+	out2.add_to_table(_parent, _first_row + 1, _first_col);
+	out3.add_to_table(_parent, _first_row + 2, _first_col);
+	out4.add_to_table(_parent, _first_row + 3, _first_col);
 	out1.disable();
 	out2.disable();
 	out3.disable();
@@ -334,7 +334,7 @@ DataOutput::DataOutput(Gtk::Table& t, int first_row,
 		double start_val1, double start_val2,
 		int first_col)
 	: DataIOBase(t),
-	DataOutputBase(t, first_row - 4, first_col)
+	DataOutputBase(t, first_row, first_col)
 {
 	set_fields(p, T, v, u, h, s, x);
 
@@ -396,17 +396,17 @@ void DataOutputWithRegion::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 {
 	DataOutputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
 
-	out5.add_to_table(_parent, _first_row + 8, _first_col);
+	out5.add_to_table(_parent, _first_row + 4, _first_col);
 	out5.disable();
 }
 
 DataOutputWithRegion::DataOutputWithRegion(Gtk::Table& t, int first_row, int first_col)
 	: DataIOBase(t),
-	DataOutputBase(t, first_row, first_col)
+	DataOutputBase(t, first_row + 1, first_col)
 {
 	region_label.set_padding(0, 10);
 	region_label.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_END);
-	t.attach(region_label, first_col, first_col + 3, first_row + 3, first_row + 4);
+	t.attach(region_label, first_col, first_col + 3, first_row, first_row + 1);
 
 	signal_data_changed().connect(
 			sigc::mem_fun(*this, &DataOutputWithRegion::recalc_for));
@@ -415,7 +415,7 @@ DataOutputWithRegion::DataOutputWithRegion(Gtk::Table& t, int first_row, int fir
 DataInputOutput::DataInputOutput(Gtk::Table& t, int first_row, int first_col)
 	: DataIOBase(t),
 	DataInputBase(t, first_row, first_col),
-	DataOutputWithRegion(t, first_row, first_col)
+	DataOutputWithRegion(t, first_row + 3, first_col)
 {
 	set_fields(p, T, v, u, h, s, x);
 }
