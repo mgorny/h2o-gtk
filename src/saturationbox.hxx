@@ -9,6 +9,7 @@
 #define _H2O_GTK_SATURATIONBOX_HXX 1
 
 #include "dataentrypair.hxx"
+#include "datainputoutput.hxx"
 
 #include <h2o>
 
@@ -23,11 +24,12 @@ class SaturationBox : public Gtk::Table
 	typedef sigc::signal<void, h2o::H2O*, int>
 		data_changed_sig;
 
-	void fill_hs(h2o::H2O& water, h2o::H2O& steam);
-
 protected:
-	DataEntryPair p, T, h1, h2, r, s1, s2;
+	DataEntryPair p, T, r;
+	DataOutput prim, bis;
+	Gtk::Label prim_label, bis_label;
 	Gtk::HSeparator sep;
+	Gtk::VSeparator vsep;
 	data_changed_sig data_changed;
 
 public:
