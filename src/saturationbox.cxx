@@ -10,27 +10,27 @@
 #include "saturationbox.hxx"
 
 SaturationBox::SaturationBox()
-	: Gtk::Table(8, 7),
+	: Gtk::Table(8, 9),
 	p("_p", "MPa", 611.213E-6, 22.064, 0.1, 5, 4, 1),
 	T("_T", "K", 273.15, 647.096, 1, 50, 2),
 	r("_r", "kJ/kg", 0, 7500, 10, 200, 2),
-	prim(*this, 4, f_Tx, 473.15, 0, 0),
-	bis(*this, 4, f_Tx, 473.15, 1, 4),
+	prim(*this, 4, f_Tx, 473.15, 0, 1),
+	bis(*this, 4, f_Tx, 473.15, 1, 5),
 	prim_label("water (')"),
 	bis_label("steam (\")")
 {
 	set_col_spacings(10);
 
-	p.add_to_table(*this, 0);
-	T.add_to_table(*this, 1);
+	p.add_to_table(*this, 0, 1);
+	T.add_to_table(*this, 1, 1);
 
-	r.add_to_table(*this, 1, 4);
+	r.add_to_table(*this, 1, 5);
 
-	attach(sep, 0, 7, 2, 3);
-	attach(vsep, 3, 4, 0, 8);
+	attach(sep, 0, 9, 2, 3);
+	attach(vsep, 4, 5, 0, 10);
 
-	attach(prim_label, 0, 3, 3, 4);
-	attach(bis_label, 4, 7, 3, 4);
+	attach(prim_label, 1, 4, 3, 4);
+	attach(bis_label, 5, 8, 3, 4);
 
 	p_conn = p.signal_value_changed().connect(
 			sigc::mem_fun(*this, &SaturationBox::recalc));
