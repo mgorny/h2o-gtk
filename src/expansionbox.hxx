@@ -20,8 +20,13 @@
 
 class RealExpansionInputOutput : public LockedDataInputOutput
 {
+	typedef sigc::signal<void>
+		eta_changed_sig;
+
+	void eta_change_handler();
+
 protected:
-	double _hin, _hout;
+	eta_changed_sig eta_changed;
 
 	DataEntryPair eta;
 
@@ -29,8 +34,9 @@ public:
 	RealExpansionInputOutput(Gtk::Table& t, int first_row,
 			double start_eta, int first_col = 0);
 
-	void recalc();
-	void set_hin_hout(double hin, double hout);
+	void recalc(h2o::H2O& in, h2o::H2O& out);
+
+	eta_changed_sig signal_eta_changed();
 };
 
 class ExpansionBox : public Gtk::Table
@@ -42,6 +48,7 @@ class ExpansionBox : public Gtk::Table
 
 	void input_changed(h2o::H2O* data, int len);
 	void output_changed(h2o::H2O* data, int len);
+	void eta_changed();
 
 protected:
 	DataInput in_io;

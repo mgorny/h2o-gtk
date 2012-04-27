@@ -9,6 +9,8 @@
 
 #include "expansionbox.hxx"
 
+#include <sigc++/functors/mem_fun.h>
+
 #include <cassert>
 #include <stdexcept>
 
@@ -24,21 +26,27 @@ RealExpansionInputOutput::RealExpansionInputOutput(
 			DataInputBase::_first_row + 1, DataInputBase::_first_col);
 
 	eta.signal_value_changed().connect(
-			sigc::mem_fun(*this, &RealExpansionInputOutput::recalc));
+			sigc::mem_fun(*this,
+				&RealExpansionInputOutput::eta_change_handler));
 }
 
-void RealExpansionInputOutput::recalc()
+void RealExpansionInputOutput::recalc(h2o::H2O& in, h2o::H2O& out)
 {
-	double hout = _hin - (_hin - _hout) * eta.get_value();
+	h2o::H2O exp = in.expand(out.p(), eta.get_value());
 
-	h.set_readonly_value(hout);
+	p.set_readonly_value(exp.p());
+	h.set_readonly_value(exp.h());
 }
 
-void RealExpansionInputOutput::set_hin_hout(double hin, double hout)
+void RealExpansionInputOutput::eta_change_handler()
 {
-	_hin = hin;
-	_hout = hout;
-	recalc();
+	eta_changed.emit();
+}
+
+RealExpansionInputOutput::eta_changed_sig
+	RealExpansionInputOutput::signal_eta_changed()
+{
+	return eta_changed;
 }
 
 ExpansionBox::ExpansionBox()
@@ -56,6 +64,8 @@ ExpansionBox::ExpansionBox()
 			sigc::mem_fun(*this, &ExpansionBox::input_changed));
 	out_io.signal_data_changed().connect(
 			sigc::mem_fun(*this, &ExpansionBox::output_changed));
+	real_io.signal_eta_changed().connect(
+			sigc::mem_fun(*this, &ExpansionBox::eta_changed));
 }
 
 void ExpansionBox::input_changed(h2o::H2O* data, int len)
@@ -74,10 +84,13 @@ void ExpansionBox::output_changed(h2o::H2O* data, int len)
 
 	cached_data[0] = data[0];
 
-	real_io.set_value1(data[0].p());
-	real_io.set_hin_hout(cached_data[1].h(), data[0].h());
-
+	eta_changed();
 	data_changed.emit(cached_data, 2);
+}
+
+void ExpansionBox::eta_changed()
+{
+	real_io.recalc(cached_data[1], cached_data[0]);
 }
 
 void ExpansionBox::recalc()
