@@ -12,14 +12,45 @@
 #include <cassert>
 #include <stdexcept>
 
+RealExpansionInputOutput::RealExpansionInputOutput(
+		Gtk::Table& t, int first_row,
+		double start_eta, int first_col)
+	: DataIOBase(t),
+	LockedDataInputOutput(t, first_row, f_ph, 0, first_col),
+	eta("\316\267", "", 0, 1, 0.001, 0.02, 3, start_eta)
+{
+	p.remove_from_table(_parent);
+	eta.add_to_table(_parent,
+			DataInputBase::_first_row + 1, DataInputBase::_first_col);
+
+	eta.signal_value_changed().connect(
+			sigc::mem_fun(*this, &RealExpansionInputOutput::recalc));
+}
+
+void RealExpansionInputOutput::recalc()
+{
+	double hout = _hin - (_hin - _hout) * eta.get_value();
+
+	h.set_readonly_value(hout);
+}
+
+void RealExpansionInputOutput::set_hin_hout(double hin, double hout)
+{
+	_hin = hin;
+	_hout = hout;
+	recalc();
+}
+
 ExpansionBox::ExpansionBox()
-	: Gtk::Table(12, 3),
-	in_io(*this, 0),
-	out_io(*this, 5, f_ps, 0.1)
+	: Gtk::Table(13, 9),
+	in_io(*this, 0, 1),
+	out_io(*this, 5, f_ps, 0.1, 1),
+	real_io(*this, 5, 0.9, 5)
 {
 	set_col_spacings(10);
 
-	attach(sep, 0, 3, 4, 5);
+	attach(sep, 0, 9, 4, 5);
+	attach(vsep, 4, 5, 0, 13);
 
 	in_io.signal_data_changed().connect(
 			sigc::mem_fun(*this, &ExpansionBox::input_changed));
@@ -40,6 +71,9 @@ void ExpansionBox::input_changed(h2o::H2O* data, int len)
 void ExpansionBox::output_changed(h2o::H2O* data, int len)
 {
 	assert(len == 1);
+
+	real_io.set_value1(data[0].p());
+	real_io.set_hin_hout(cached_input.h(), data[0].h());
 
 	h2o::H2O plot_data[2];
 

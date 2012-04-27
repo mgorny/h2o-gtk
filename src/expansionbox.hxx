@@ -8,6 +8,7 @@
 #ifndef _H2O_GTK_EXPANSIONBOX_HXX
 #define _H2O_GTK_EXPANSIONBOX_HXX 1
 
+#include "dataentrypair.hxx"
 #include "datainputoutput.hxx"
 
 #include <h2o>
@@ -16,6 +17,21 @@
 #include <gtkmm/label.h>
 #include <gtkmm/separator.h>
 #include <gtkmm/table.h>
+
+class RealExpansionInputOutput : public LockedDataInputOutput
+{
+protected:
+	double _hin, _hout;
+
+	DataEntryPair eta;
+
+public:
+	RealExpansionInputOutput(Gtk::Table& t, int first_row,
+			double start_eta, int first_col = 0);
+
+	void recalc();
+	void set_hin_hout(double hin, double hout);
+};
 
 class ExpansionBox : public Gtk::Table
 {
@@ -30,7 +46,9 @@ class ExpansionBox : public Gtk::Table
 protected:
 	DataInput in_io;
 	Gtk::HSeparator sep;
+	Gtk::VSeparator vsep;
 	LockedDataInputOutput out_io;
+	RealExpansionInputOutput real_io;
 	data_changed_sig data_changed;
 
 public:
