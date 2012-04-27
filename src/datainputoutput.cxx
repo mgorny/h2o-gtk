@@ -336,9 +336,7 @@ DataOutput::DataOutput(Gtk::Table& t, int first_row,
 	: DataIOBase(t),
 	DataOutputBase(t, first_row, first_col)
 {
-	set_fields(p, T, v, u, h, s, x);
-
-	func_chooser.set_active(locked_func);
+	set_function(locked_func);
 	set_value1(start_val1);
 	set_value2(start_val2);
 }
