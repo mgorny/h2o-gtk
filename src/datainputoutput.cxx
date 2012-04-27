@@ -293,6 +293,9 @@ void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 	out2.disable();
 	out3.disable();
 	out4.disable();
+
+	input_entry1 = &in1;
+	input_entry2 = &in2;
 }
 
 DataOutputBase::DataOutputBase(Gtk::Table& t, int first_row, int first_col)
@@ -309,22 +312,19 @@ void DataOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 {
 	DataIOBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
 	DataOutputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
-
-	input_entry1 = &in1;
-	input_entry2 = &in2;
 }
 
-void DataOutput::set_function(Function f)
+void DataOutputBase::set_function(Function f)
 {
 	func_chooser.set_active(f);
 }
 
-void DataOutput::set_value1(double val)
+void DataOutputBase::set_value1(double val)
 {
 	input_entry1->set_readonly_value(val);
 }
 
-void DataOutput::set_value2(double val)
+void DataOutputBase::set_value2(double val)
 {
 	input_entry2->set_readonly_value(val);
 }
