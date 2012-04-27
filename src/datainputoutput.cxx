@@ -205,8 +205,10 @@ DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
 {
 
 	func_label.set_mnemonic_widget(func_chooser);
-	t.attach(func_label, 0, 1, first_row + 0, first_row + 1);
-	t.attach(func_chooser, 1, 2, first_row + 0, first_row + 1);
+	t.attach(func_label, first_col, first_col + 1,
+			first_row + 0, first_row + 1);
+	t.attach(func_chooser, first_col + 1, first_col + 2,
+			first_row + 0, first_row + 1);
 }
 
 DataInput::DataInput(Gtk::Table& t, int first_row, int first_col)
