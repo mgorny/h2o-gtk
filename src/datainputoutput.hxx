@@ -155,15 +155,6 @@ public:
 
 class LockedDataInputOutput : public DataInputOutput
 {
-	DataEntryPair* controlled_entry;
-	DataEntryPair* user_entry;
-
-protected:
-	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
-			DataEntryPair& out1, DataEntryPair& out2,
-			DataEntryPair& out3, DataEntryPair& out4,
-			DataEntryPair& out5);
-
 public:
 	LockedDataInputOutput(Gtk::Table& t, int first_row,
 			Function locked_func, double start_uval = 10,

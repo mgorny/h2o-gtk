@@ -435,29 +435,16 @@ LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
 	_parent.remove(func_label);
 	_parent.remove(func_chooser);
 
-	func_chooser.set_active(locked_func);
-	user_entry->set_value(start_uval);
-}
-
-void LockedDataInputOutput::set_fields(
-		DataEntryPair& in1, DataEntryPair& in2,
-		DataEntryPair& out1, DataEntryPair& out2,
-		DataEntryPair& out3, DataEntryPair& out4,
-		DataEntryPair& out5)
-{
-	DataInputOutput::set_fields(in1, in2, out1, out2, out3, out4, out5);
-
-	in2.disable();
-	user_entry = &in1;
-	controlled_entry = &in2;
+	set_function(locked_func);
+	input_entry1->set_value(start_uval);
 }
 
 void LockedDataInputOutput::set_user_value_range(double min, double max)
 {
-	user_entry->set_range(min, max);
+	input_entry1->set_range(min, max);
 }
 
 void LockedDataInputOutput::set_controlled_value(double val)
 {
-	controlled_entry->set_readonly_value(val);
+	set_value2(val);
 }
