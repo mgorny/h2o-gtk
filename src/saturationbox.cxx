@@ -32,8 +32,10 @@ SaturationBox::SaturationBox()
 	attach(prim_label, 0, 3, 3, 4);
 	attach(bis_label, 4, 7, 3, 4);
 
-	p.signal_value_changed().connect(sigc::mem_fun(*this, &SaturationBox::recalc));
-	T.signal_value_changed().connect(sigc::mem_fun(*this, &SaturationBox::recalc_from_T));
+	p_conn = p.signal_value_changed().connect(
+			sigc::mem_fun(*this, &SaturationBox::recalc));
+	T.signal_value_changed().connect(
+			sigc::mem_fun(*this, &SaturationBox::recalc_from_T));
 }
 
 void SaturationBox::recalc()
@@ -56,7 +58,9 @@ void SaturationBox::recalc_from_T()
 	medium[0] = prim.get_h2o();
 	medium[1] = bis.get_h2o();
 
+	p_conn.block();
 	p.set_value(medium[0].p());
+	p_conn.unblock();
 	r.set_readonly_value(medium[1].h() - medium[0].h());
 
 	data_changed.emit(medium, 2);
