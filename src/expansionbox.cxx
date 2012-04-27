@@ -64,6 +64,9 @@ ExpansionBox::ExpansionBox()
 			sigc::mem_fun(*this, &ExpansionBox::input_changed));
 	out_io.signal_data_changed().connect(
 			sigc::mem_fun(*this, &ExpansionBox::output_changed));
+	real_io.signal_data_changed().connect(
+			sigc::mem_fun(*this, &ExpansionBox::real_changed));
+
 	real_io.signal_eta_changed().connect(
 			sigc::mem_fun(*this, &ExpansionBox::eta_changed));
 }
@@ -84,8 +87,21 @@ void ExpansionBox::output_changed(h2o::H2O* data, int len)
 
 	cached_data[0] = data[0];
 
+	// update real_io
 	eta_changed();
-	data_changed.emit(cached_data, 2);
+}
+
+void ExpansionBox::real_changed(h2o::H2O* data, int len)
+{
+	assert(len == 1);
+
+	h2o::H2O plot_data[3];
+
+	plot_data[0] = cached_data[0];
+	plot_data[1] = cached_data[1];
+	plot_data[2] = data[0];
+
+	data_changed.emit(plot_data, 3);
 }
 
 void ExpansionBox::eta_changed()

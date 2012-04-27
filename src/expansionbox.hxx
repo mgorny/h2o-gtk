@@ -48,6 +48,7 @@ class ExpansionBox : public Gtk::Table
 
 	void input_changed(h2o::H2O* data, int len);
 	void output_changed(h2o::H2O* data, int len);
+	void real_changed(h2o::H2O* data, int len);
 	void eta_changed();
 
 protected:
