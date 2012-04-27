@@ -38,7 +38,7 @@ class ExpansionBox : public Gtk::Table
 	typedef sigc::signal<void, h2o::H2O*, int>
 		data_changed_sig;
 
-	h2o::H2O cached_input;
+	h2o::H2O cached_data[2];
 
 	void input_changed(h2o::H2O* data, int len);
 	void output_changed(h2o::H2O* data, int len);

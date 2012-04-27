@@ -62,25 +62,22 @@ void ExpansionBox::input_changed(h2o::H2O* data, int len)
 {
 	assert(len == 1);
 
-	cached_input = data[0];
+	cached_data[1] = data[0];
 
-	out_io.set_user_value_range(1E-3, cached_input.p());
-	out_io.set_controlled_value(cached_input.s());
+	out_io.set_user_value_range(1E-3, data[0].p());
+	out_io.set_controlled_value(data[0].s());
 }
 
 void ExpansionBox::output_changed(h2o::H2O* data, int len)
 {
 	assert(len == 1);
 
+	cached_data[0] = data[0];
+
 	real_io.set_value1(data[0].p());
-	real_io.set_hin_hout(cached_input.h(), data[0].h());
+	real_io.set_hin_hout(cached_data[1].h(), data[0].h());
 
-	h2o::H2O plot_data[2];
-
-	plot_data[0] = data[0];
-	plot_data[1] = cached_input;
-
-	data_changed.emit(plot_data, 2);
+	data_changed.emit(cached_data, 2);
 }
 
 void ExpansionBox::recalc()
