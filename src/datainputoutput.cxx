@@ -301,6 +301,47 @@ DataOutputBase::DataOutputBase(Gtk::Table& t, int first_row, int first_col)
 			sigc::mem_fun(*this, &DataOutputBase::recalc_for));
 }
 
+void DataOutput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	DataIOBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+	DataOutputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+
+	input_entry1 = &in1;
+	input_entry2 = &in2;
+}
+
+void DataOutput::set_function(Function f)
+{
+	func_chooser.set_active(f);
+}
+
+void DataOutput::set_value1(double val)
+{
+	input_entry1->set_readonly_value(val);
+}
+
+void DataOutput::set_value2(double val)
+{
+	input_entry2->set_readonly_value(val);
+}
+
+DataOutput::DataOutput(Gtk::Table& t, int first_row,
+		Function locked_func,
+		double start_val1, double start_val2,
+		int first_col)
+	: DataIOBase(t, first_row - 4, first_col),
+	DataOutputBase(t, first_row - 4, first_col)
+{
+	set_fields(p, T, v, u, h, s, x);
+
+	func_chooser.set_active(locked_func);
+	set_value1(start_val1);
+	set_value2(start_val2);
+}
+
 void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 {
 	assert(len == 1);

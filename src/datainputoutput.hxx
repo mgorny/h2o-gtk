@@ -100,6 +100,28 @@ protected:
 	DataOutputBase(Gtk::Table& t, int first_row, int first_col = 0);
 };
 
+class DataOutput : public DataOutputBase
+{
+protected:
+	DataEntryPair* input_entry1;
+	DataEntryPair* input_entry2;
+
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
+public:
+	DataOutput(Gtk::Table& t, int first_row,
+			Function locked_func,
+			double start_val1 = 0, double start_val2 = 0,
+			int first_col = 0);
+
+	void set_function(Function f);
+	void set_value1(double val);
+	void set_value2(double val);
+};
+
 class DataOutputWithRegion : public DataOutputBase
 {
 	void recalc_for(h2o::H2O* data, int len);
