@@ -46,6 +46,9 @@ PlotAxesControl::PlotAxesControl()
 	y.signal_changed().connect(
 			sigc::mem_fun(*this, &PlotAxesControl::axis_changed));
 
+	x.set_tooltip_text("x axis quantity");
+	y.set_tooltip_text("y axis quantity");
+
 	set_spacing(5);
 
 	pack_start(y);
@@ -249,6 +252,9 @@ PlotBottomControlBox::PlotBottomControlBox()
 {
 	add_to_plot.signal_clicked().connect(add_to_plot_sig);
 	clear_plot.signal_clicked().connect(clear_plot_sig);
+
+	add_to_plot.set_tooltip_text("Add currently rendered function to the plot");
+	clear_plot.set_tooltip_text("Remove all plot data");
 
 	attach(add_to_plot, 0, 1, 0, 1);
 	attach(clear_plot, 1, 2, 0, 1);
