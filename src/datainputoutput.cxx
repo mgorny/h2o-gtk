@@ -23,6 +23,7 @@ FunctionChoiceComboBox::FunctionChoiceComboBox()
 	append_text("f(\317\201, T)");
 
 	set_active(0);
+	set_tooltip_text("Input parameters choice");
 }
 
 enum Function FunctionChoiceComboBox::get_function()
