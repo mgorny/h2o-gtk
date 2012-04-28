@@ -90,8 +90,12 @@ class Plot : public PlotMM::Plot
 	PlotAxisProperty x_prop, y_prop;
 
 protected:
+	typedef std::vector< Glib::RefPtr<DataCurve> >
+		DataCurveVector;
+
 	Glib::RefPtr<SaturationCurve> saturation_curve;
-	Glib::RefPtr<DataCurve> data_curve, user_plot_curve;
+	Glib::RefPtr<DataCurve> data_curve;
+	DataCurveVector user_plot;
 
 public:
 	Plot();

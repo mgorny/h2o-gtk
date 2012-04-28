@@ -166,8 +166,7 @@ void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 Plot::Plot()
 	: x_prop(&h2o::H2O::s), y_prop(&h2o::H2O::T),
 	saturation_curve(new SaturationCurve()),
-	data_curve(new DataCurve("red")),
-	user_plot_curve(new DataCurve("green"))
+	data_curve(new DataCurve("red"))
 {
 	set_size_request(300, 200);
 
@@ -177,8 +176,6 @@ Plot::Plot()
 
 	add_curve(saturation_curve);
 	add_curve(data_curve);
-	add_curve(user_plot_curve);
-	user_plot_curve->set_enabled(false);
 
 	saturation_curve->replot(x_prop, y_prop);
 	replot();
@@ -225,7 +222,11 @@ void Plot::update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y)
 
 	saturation_curve->replot(x_prop, y_prop);
 	data_curve->replot(x_prop, y_prop);
-	user_plot_curve->replot(x_prop, y_prop);
+
+	DataCurveVector::iterator i;
+	for (i = user_plot.begin(); i != user_plot.end(); ++i)
+		(*i)->replot(x_prop, y_prop);
+
 	replot();
 }
 
@@ -238,17 +239,26 @@ void Plot::plot_data(h2o::H2O data[], int len)
 
 void Plot::append_plot()
 {
-	// (temporarily replaces the current plot)
+	Glib::RefPtr<DataCurve> new_curve(
+			new DataCurve("green"));
 
-	user_plot_curve->replace_data(data_curve->get_data());
-	user_plot_curve->replot(x_prop, y_prop);
+	new_curve->replace_data(data_curve->get_data());
+	new_curve->replot(x_prop, y_prop);
+	add_curve(new_curve);
+	user_plot.push_back(new_curve);
 	replot();
 }
 
 void Plot::clear_plot()
 {
-	user_plot_curve->get_data().clear();
-	user_plot_curve->set_enabled(false);
+	// XXX: can we remove curves from plot somehow?
+	// seems like we have to just keep them disabled...
+
+	DataCurveVector::iterator i;
+	for (i = user_plot.begin(); i != user_plot.end(); ++i)
+		(*i)->set_enabled(false);
+
+	user_plot.clear();
 	replot();
 }
 
