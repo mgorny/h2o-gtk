@@ -73,22 +73,6 @@ void DataIOBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 			sigc::mem_fun(*this, &DataIOBase::recalc));
 }
 
-typedef double (h2o::H2O::*MediumProperty)() const;
-
-static inline void update_field(DataEntryPair& dest, h2o::H2O& medium, MediumProperty prop)
-{
-	try
-	{
-		double v = (medium.*prop)();
-		dest.set_readonly_value(v);
-		dest.set_sensitive(true);
-	}
-	catch (std::runtime_error)
-	{
-		dest.set_sensitive(false);
-	};
-}
-
 static const double scrit = 4.41202148223476; // [kJ/kgK]
 
 static inline void r3_preset_x(DataEntryPair& x, DataEntryPair& s)
@@ -227,59 +211,59 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 	switch (func_chooser.get_function())
 	{
 		case f_pT:
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
+			h.set_readonly_value(medium, &h2o::H2O::h);
+			s.set_readonly_value(medium, &h2o::H2O::s);
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
+			x.set_readonly_value(medium, &h2o::H2O::x);
+			v.set_readonly_value(medium, &h2o::H2O::v);
 			break;
 		case f_ph:
-			update_field(T, medium, &h2o::H2O::T);
-			update_field(s, medium, &h2o::H2O::s);
+			T.set_readonly_value(medium, &h2o::H2O::T);
+			s.set_readonly_value(medium, &h2o::H2O::s);
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
+			x.set_readonly_value(medium, &h2o::H2O::x);
+			v.set_readonly_value(medium, &h2o::H2O::v);
 			break;
 		case f_ps:
-			update_field(T, medium, &h2o::H2O::T);
-			update_field(h, medium, &h2o::H2O::h);
+			T.set_readonly_value(medium, &h2o::H2O::T);
+			h.set_readonly_value(medium, &h2o::H2O::h);
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
+			x.set_readonly_value(medium, &h2o::H2O::x);
+			v.set_readonly_value(medium, &h2o::H2O::v);
 			break;
 		case f_px:
-			update_field(T, medium, &h2o::H2O::T);
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
-			update_field(v, medium, &h2o::H2O::v);
+			T.set_readonly_value(medium, &h2o::H2O::T);
+			h.set_readonly_value(medium, &h2o::H2O::h);
+			s.set_readonly_value(medium, &h2o::H2O::s);
+			v.set_readonly_value(medium, &h2o::H2O::v);
 			break;
 		case f_Tx:
-			update_field(p, medium, &h2o::H2O::p);
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
-			update_field(v, medium, &h2o::H2O::v);
+			p.set_readonly_value(medium, &h2o::H2O::p);
+			h.set_readonly_value(medium, &h2o::H2O::h);
+			s.set_readonly_value(medium, &h2o::H2O::s);
+			v.set_readonly_value(medium, &h2o::H2O::v);
 			break;
 		case f_hs:
-			update_field(p, medium, &h2o::H2O::p);
-			update_field(T, medium, &h2o::H2O::T);
+			p.set_readonly_value(medium, &h2o::H2O::p);
+			T.set_readonly_value(medium, &h2o::H2O::T);
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
-			update_field(v, medium, &h2o::H2O::v);
+			x.set_readonly_value(medium, &h2o::H2O::x);
+			v.set_readonly_value(medium, &h2o::H2O::v);
 			break;
 		case f_rhoT:
-			update_field(p, medium, &h2o::H2O::p);
-			update_field(h, medium, &h2o::H2O::h);
-			update_field(s, medium, &h2o::H2O::s);
+			p.set_readonly_value(medium, &h2o::H2O::p);
+			h.set_readonly_value(medium, &h2o::H2O::h);
+			s.set_readonly_value(medium, &h2o::H2O::s);
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
+			x.set_readonly_value(medium, &h2o::H2O::x);
 	}
 
-	update_field(u, medium, &h2o::H2O::u);
+	u.set_readonly_value(medium, &h2o::H2O::u);
 }
 
 void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
@@ -381,7 +365,7 @@ void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 		case f_rhoT:
 			if (medium.region() == 3)
 				r3_preset_x(x, s);
-			update_field(x, medium, &h2o::H2O::x);
+			x.set_readonly_value(medium, &h2o::H2O::x);
 			break;
 		case f_px:
 		case f_Tx:

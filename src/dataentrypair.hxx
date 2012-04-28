@@ -8,12 +8,16 @@
 #ifndef _H2O_GTK_DATAENTRYPAIR_HXX
 #define _H2O_GTK_DATAENTRYPAIR_HXX 1
 
+#include <h2o>
+
 #include <gtkmm/label.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/table.h>
 
 class DataEntryPair : public Gtk::SpinButton
 {
+	typedef double (h2o::H2O::*MediumProperty)() const;
+
 	double def_min, def_max;
 	bool attached;
 
@@ -33,6 +37,7 @@ public:
 	void disable();
 
 	void set_readonly_value(double newval);
+	void set_readonly_value(const h2o::H2O& medium, MediumProperty prop);
 };
 
 #endif /*_H2O_GTK_DATAENTRYPAIR_HXX*/
