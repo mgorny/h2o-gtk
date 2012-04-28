@@ -352,7 +352,7 @@ void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 			label_text = "Region 5 (dry steam)";
 			break;
 		default:
-			label_text = "Out-of-rnage";
+			label_text = "Out-of-range";
 	}
 	region_label.set_text(label_text);
 
