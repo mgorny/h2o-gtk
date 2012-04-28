@@ -19,6 +19,9 @@ SaturationBox::SaturationBox()
 {
 	set_col_spacings(10);
 
+	p.set_range(611.213E-6, 22.064);
+	T.set_range(273.15, 647.096);
+
 	p.add_to_table(*this, 0, 1);
 	T.add_to_table(*this, 1, 1);
 
