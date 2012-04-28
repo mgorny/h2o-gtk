@@ -32,14 +32,8 @@ enum Function FunctionChoiceComboBox::get_function()
 
 DataIOBase::DataIOBase(Gtk::Table& t)
 	: _parent(t),
-	p("_p", "MPa", 1E-4, 100, 0.1, 5, 4, 10),
-	T("_T", "K", 273.15, 2273.15, 1, 50, 2, 773.15),
-	v("_v", "m³/kg", 0, 1E17, 0.01, 1, 6),
-	u("_u", "kJ/kg", 0, 6400, 10, 200, 2),
-	h("_h", "kJ/kg", 0, 7500, 10, 200, 2),
-	s("_s", "kJ/kgK", 0, 28, 0.04, 0.2, 3),
-	x("_x", "[-]", 0, 1, 0.004, 0.02, 3),
-	rho("\317\201", "kg/m\302\263", 0, 1050, 5, 40, 2),
+	p(10),
+	T(773.15),
 	func_label("_f", Gtk::ALIGN_END, Gtk::ALIGN_CENTER, true)
 {
 	func_chooser.signal_changed().connect(

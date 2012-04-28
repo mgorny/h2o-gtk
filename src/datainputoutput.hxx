@@ -52,7 +52,14 @@ protected:
 
 	data_changed_sig data_changed;
 	FunctionChoiceComboBox func_chooser;
-	DataEntryPair p, T, v, u, h, s, x, rho;
+	PressureEntry p;
+	TemperatureEntry T;
+	VolumeEntry v;
+	InternalEnergyEntry u;
+	EnthalpyEntry h;
+	EnthropyEntry s;
+	DrynessEntry x;
+	DensityEntry rho;
 	Gtk::Label func_label;
 
 	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,

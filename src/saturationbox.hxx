@@ -26,7 +26,10 @@ class SaturationBox : public Gtk::Table
 	sigc::connection p_conn;
 
 protected:
-	DataEntryPair p, T, r;
+	PressureEntry p;
+	TemperatureEntry T;
+	HeatOfVaporizationEntry r;
+
 	DataOutput prim, bis;
 	Gtk::Label prim_label, bis_label;
 	Gtk::HSeparator sep;

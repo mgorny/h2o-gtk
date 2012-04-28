@@ -11,9 +11,7 @@
 
 SaturationBox::SaturationBox()
 	: Gtk::Table(8, 9),
-	p("_p", "MPa", 611.213E-6, 22.064, 0.1, 5, 4, 1),
-	T("_T", "K", 273.15, 647.096, 1, 50, 2),
-	r("_r", "kJ/kg", 0, 7500, 10, 200, 2),
+	p(1),
 	prim(*this, 4, f_Tx, 473.15, 0, 1),
 	bis(*this, 4, f_Tx, 473.15, 1, 5),
 	prim_label("water (')"),

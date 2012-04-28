@@ -19,7 +19,7 @@ RealExpansionInputOutput::RealExpansionInputOutput(
 		double start_eta, int first_col)
 	: DataIOBase(t),
 	LockedDataInputOutput(t, first_row, f_ph, 0, first_col),
-	eta("\316\267", "", 0, 1, 0.001, 0.02, 3, start_eta)
+	eta(start_eta)
 {
 	p.remove_from_table(_parent);
 	eta.add_to_table(_parent,

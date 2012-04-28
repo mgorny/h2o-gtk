@@ -88,3 +88,53 @@ void DataEntryPair::set_readonly_value(const h2o::H2O& medium, MediumProperty pr
 		set_sensitive(false);
 	};
 }
+
+PressureEntry::PressureEntry(double val)
+	: DataEntryPair("_p", "MPa", 1E-4, 100, 0.1, 5, 4, val)
+{
+}
+
+TemperatureEntry::TemperatureEntry(double val)
+	: DataEntryPair("_T", "K", 273.15, 2273.15, 1, 50, 2, val)
+{
+}
+
+VolumeEntry::VolumeEntry(double val)
+	: DataEntryPair("_v", "m³/kg", 0, 1E17, 0.01, 1, 6, val)
+{
+}
+
+InternalEnergyEntry::InternalEnergyEntry(double val)
+	: DataEntryPair("_u", "kJ/kg", 0, 6400, 10, 200, 2, val)
+{
+}
+
+EnthalpyEntry::EnthalpyEntry(double val)
+	: DataEntryPair("_h", "kJ/kg", 0, 7500, 10, 200, 2, val)
+{
+}
+
+EnthropyEntry::EnthropyEntry(double val)
+	: DataEntryPair("_s", "kJ/kgK", 0, 28, 0.04, 0.2, 3, val)
+{
+}
+
+DrynessEntry::DrynessEntry(double val)
+	: DataEntryPair("_x", "[-]", 0, 1, 0.004, 0.02, 3, val)
+{
+}
+
+DensityEntry::DensityEntry(double val)
+	: DataEntryPair("\317\201", "kg/m\302\263", 0, 1050, 5, 40, 2, val)
+{
+}
+
+EfficiencyEntry::EfficiencyEntry(double val)
+	: DataEntryPair("\316\267", "[-]", 0, 1, 0.001, 0.02, 3, val)
+{
+}
+
+HeatOfVaporizationEntry::HeatOfVaporizationEntry(double val)
+{
+	label.set_text_with_mnemonic("_r");
+}

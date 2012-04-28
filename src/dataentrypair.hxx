@@ -28,7 +28,7 @@ protected:
 public:
 	DataEntryPair(const char* desc, const char* unit,
 			double min, double max, double step, double pagestep,
-			double decplaces, double val = 0);
+			double decplaces, double val);
 
 	void add_to_table(Gtk::Table& t, int row, int col = 0);
 	void remove_from_table(Gtk::Table& t);
@@ -38,6 +38,66 @@ public:
 
 	void set_readonly_value(double newval);
 	void set_readonly_value(const h2o::H2O& medium, MediumProperty prop);
+};
+
+class PressureEntry : public DataEntryPair
+{
+public:
+	PressureEntry(double val = 0);
+};
+
+class TemperatureEntry : public DataEntryPair
+{
+public:
+	TemperatureEntry(double val = 0);
+};
+
+class VolumeEntry : public DataEntryPair
+{
+public:
+	VolumeEntry(double val = 0);
+};
+
+class InternalEnergyEntry : public DataEntryPair
+{
+public:
+	InternalEnergyEntry(double val = 0);
+};
+
+class EnthalpyEntry : public DataEntryPair
+{
+public:
+	EnthalpyEntry(double val = 0);
+};
+
+class EnthropyEntry : public DataEntryPair
+{
+public:
+	EnthropyEntry(double val = 0);
+};
+
+class DrynessEntry : public DataEntryPair
+{
+public:
+	DrynessEntry(double val = 0);
+};
+
+class DensityEntry : public DataEntryPair
+{
+public:
+	DensityEntry(double val = 0);
+};
+
+class EfficiencyEntry : public DataEntryPair
+{
+public:
+	EfficiencyEntry(double val = 0);
+};
+
+class HeatOfVaporizationEntry : public EnthalpyEntry
+{
+public:
+	HeatOfVaporizationEntry(double val = 0);
 };
 
 #endif /*_H2O_GTK_DATAENTRYPAIR_HXX*/

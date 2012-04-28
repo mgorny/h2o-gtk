@@ -28,7 +28,7 @@ class RealExpansionInputOutput : public LockedDataInputOutput
 protected:
 	eta_changed_sig eta_changed;
 
-	DataEntryPair eta;
+	EfficiencyEntry eta;
 
 public:
 	RealExpansionInputOutput(Gtk::Table& t, int first_row,
