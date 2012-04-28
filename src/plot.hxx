@@ -74,17 +74,20 @@ public:
 
 class DataCurve : public PlotMM::Curve
 {
+	std::vector<h2o::H2O> data;
+
 public:
 	DataCurve(const char* color);
 
-	void replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
-			std::vector<h2o::H2O>& data);
+	std::vector<h2o::H2O>& get_data();
+	void replace_data(std::vector<h2o::H2O>& new_data);
+	void replace_data(h2o::H2O* new_data, int len);
+	void replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop);
 };
 
 class Plot : public PlotMM::Plot
 {
 	PlotAxisProperty x_prop, y_prop;
-	std::vector<h2o::H2O> current_data, user_data;
 
 protected:
 	Glib::RefPtr<SaturationCurve> saturation_curve;

@@ -108,8 +108,27 @@ DataCurve::DataCurve(const char* color)
 	symbol()->set_size(5);
 }
 
-void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop,
-			std::vector<h2o::H2O>& data)
+std::vector<h2o::H2O>& DataCurve::get_data()
+{
+	return data;
+}
+
+void DataCurve::replace_data(std::vector<h2o::H2O>& new_data)
+{
+	data = new_data;
+}
+
+void DataCurve::replace_data(h2o::H2O* new_data, int len)
+{
+	int i;
+
+	data.reserve(len);
+	data.clear();
+	for (i = 0; i < len; ++i)
+		data.push_back(new_data[i]);
+}
+
+void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 {
 	const int len = data.size();
 
@@ -205,42 +224,30 @@ void Plot::update_axes(enum PlotAxisQuantity x, enum PlotAxisQuantity y)
 	y_prop = quant_to_prop(y);
 
 	saturation_curve->replot(x_prop, y_prop);
-	data_curve->replot(x_prop, y_prop, current_data);
-	user_plot_curve->replot(x_prop, y_prop, user_data);
+	data_curve->replot(x_prop, y_prop);
+	user_plot_curve->replot(x_prop, y_prop);
 	replot();
 }
 
 void Plot::plot_data(h2o::H2O data[], int len)
 {
-	int i;
-
-	current_data.reserve(len);
-	current_data.clear();
-	for (i = 0; i < len; ++i)
-		current_data.push_back(data[i]);
-
-	data_curve->replot(x_prop, y_prop, current_data);
+	data_curve->replace_data(data, len);
+	data_curve->replot(x_prop, y_prop);
 	replot();
 }
 
 void Plot::append_plot()
 {
-	const int len = current_data.size();
+	// (temporarily replaces the current plot)
 
-	int i;
-
-	user_data.reserve(user_data.size() + len);
-	for (i = 0; i < len; ++i)
-		user_data.push_back(current_data[i]);
-
-	user_plot_curve->replot(x_prop, y_prop, user_data);
+	user_plot_curve->replace_data(data_curve->get_data());
+	user_plot_curve->replot(x_prop, y_prop);
 	replot();
 }
 
 void Plot::clear_plot()
 {
-	user_data.clear();
-
+	user_plot_curve->get_data().clear();
 	user_plot_curve->set_enabled(false);
 	replot();
 }
