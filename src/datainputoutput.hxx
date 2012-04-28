@@ -160,6 +160,8 @@ public:
 			Function locked_func, double start_uval = 10,
 			int first_col = 0);
 
+	void disable();
+
 	void set_user_value_range(double min, double max);
 	void set_controlled_value(double val);
 };

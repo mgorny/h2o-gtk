@@ -32,10 +32,28 @@ RealExpansionInputOutput::RealExpansionInputOutput(
 
 void RealExpansionInputOutput::recalc(h2o::H2O& in, h2o::H2O& out)
 {
-	h2o::H2O exp = in.expand(out.p(), eta.get_value());
+	h2o::H2O exp;
 
-	p.set_readonly_value(exp.p());
-	h.set_readonly_value(exp.h());
+	try
+	{
+		exp = in.expand(out.p(), eta.get_value());
+
+		p.set_readonly_value(exp, &h2o::H2O::p);
+		h.set_readonly_value(exp, &h2o::H2O::h);
+		eta.set_sensitive();
+	}
+	catch (std::runtime_error)
+	{
+		h.set_readonly_value(0);
+		disable();
+	}
+}
+
+void RealExpansionInputOutput::disable()
+{
+	LockedDataInputOutput::disable();
+
+	eta.set_sensitive(false);
 }
 
 void RealExpansionInputOutput::eta_change_handler()
@@ -77,8 +95,21 @@ void ExpansionBox::input_changed(h2o::H2O* data, int len)
 
 	cached_data[1] = data[0];
 
-	out_io.set_user_value_range(1E-3, data[0].p());
-	out_io.set_controlled_value(data[0].s());
+	try
+	{
+		out_io.set_user_value_range(1E-3, data[0].p());
+		out_io.set_controlled_value(data[0].s());
+	}
+	catch (std::runtime_error)
+	{
+		// this is a hack to ensure re-calculation
+		// after correcting input and re-enabling entries
+		out_io.set_controlled_value(0);
+		real_io.set_controlled_value(0);
+
+		out_io.disable();
+		real_io.disable();
+	}
 }
 
 void ExpansionBox::output_changed(h2o::H2O* data, int len)

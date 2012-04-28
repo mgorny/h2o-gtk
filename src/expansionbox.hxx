@@ -34,6 +34,8 @@ public:
 	RealExpansionInputOutput(Gtk::Table& t, int first_row,
 			double start_eta, int first_col = 0);
 
+	void disable();
+
 	void recalc(h2o::H2O& in, h2o::H2O& out);
 
 	eta_changed_sig signal_eta_changed();

@@ -425,12 +425,31 @@ LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
 	input_entry1->set_value(start_uval);
 }
 
+void LockedDataInputOutput::disable()
+{
+	region_label.set_text("Invalid input");
+
+	p.set_sensitive(false);
+	T.set_sensitive(false);
+	v.set_sensitive(false);
+	u.set_sensitive(false);
+	h.set_sensitive(false);
+	s.set_sensitive(false);
+	x.set_sensitive(false);
+}
+
 void LockedDataInputOutput::set_user_value_range(double min, double max)
 {
 	input_entry1->set_range(min, max);
+
+	// re-enable if necessary
+	input_entry1->set_sensitive();
 }
 
 void LockedDataInputOutput::set_controlled_value(double val)
 {
 	set_value2(val);
+
+	// re-enable if necessary
+	input_entry2->set_sensitive();
 }
