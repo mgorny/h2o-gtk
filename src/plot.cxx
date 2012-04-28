@@ -256,7 +256,10 @@ void Plot::clear_plot()
 
 	DataCurveVector::iterator i;
 	for (i = user_plot.begin(); i != user_plot.end(); ++i)
+	{
+		(*i)->set_data(NULL, NULL, 0);
 		(*i)->set_enabled(false);
+	}
 
 	user_plot.clear();
 	replot();
