@@ -7,45 +7,10 @@
 #	include "config.h"
 #endif
 
-#include "calcbox.hxx"
-#include "expansionbox.hxx"
-#include "saturationbox.hxx"
-#include "plot.hxx"
+#include "main.hxx"
 
-#include <h2o>
-
-#include <gtkmm/box.h>
 #include <gtkmm/main.h>
-#include <gtkmm/notebook.h>
-#include <gtkmm/window.h>
 #include <sigc++/functors/mem_fun.h>
-
-class MainHBox : public Gtk::HBox
-{
-protected:
-#ifdef HAVE_PLOTMM
-	PlotBox plotbox;
-#endif /*HAVE_PLOTMM*/
-	Gtk::Notebook notebook;
-
-	CalcBox single_point_box;
-	SaturationBox saturation_box;
-	ExpansionBox expansion_box;
-
-public:
-	MainHBox();
-
-	void page_switched(GtkNotebookPage* p, guint n);
-};
-
-class MainWindow : public Gtk::Window
-{
-protected:
-	MainHBox cont;
-
-public:
-	MainWindow();
-};
 
 MainHBox::MainHBox()
 {
