@@ -39,8 +39,8 @@ protected:
 public:
 	SaturationBox();
 
+	void recalc_from_p();
 	void recalc();
-	void recalc_from_T();
 	void reorder_fields();
 
 	data_changed_sig signal_data_changed();

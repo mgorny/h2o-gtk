@@ -11,7 +11,7 @@
 
 SaturationBox::SaturationBox()
 	: Gtk::Table(8, 9),
-	p(1),
+	T(372.75), // @ 0.1 MPa
 	prim(*this, 4, f_Tx, 473.15, 0, 1),
 	bis(*this, 4, f_Tx, 473.15, 1, 5),
 	prim_label("water (')"),
@@ -34,12 +34,12 @@ SaturationBox::SaturationBox()
 	attach(bis_label, 5, 8, 3, 4);
 
 	p_conn = p.signal_value_changed().connect(
-			sigc::mem_fun(*this, &SaturationBox::recalc));
+			sigc::mem_fun(*this, &SaturationBox::recalc_from_p));
 	T.signal_value_changed().connect(
-			sigc::mem_fun(*this, &SaturationBox::recalc_from_T));
+			sigc::mem_fun(*this, &SaturationBox::recalc));
 }
 
-void SaturationBox::recalc()
+void SaturationBox::recalc_from_p()
 {
 	double pval = p.get_value();
 	double Tval = h2o::H2O::px(pval, 0).T();
@@ -47,7 +47,7 @@ void SaturationBox::recalc()
 	T.set_value(Tval);
 }
 
-void SaturationBox::recalc_from_T()
+void SaturationBox::recalc()
 {
 	double Tval = T.get_value();
 
