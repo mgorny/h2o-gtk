@@ -9,6 +9,12 @@
 
 #include "saturationbox.hxx"
 
+HeatOfVaporizationEntry::HeatOfVaporizationEntry(double val)
+{
+	label.set_text_with_mnemonic("_r");
+	set_tooltip_text("Specific heat of vaporization");
+}
+
 SaturationBox::SaturationBox()
 	: Gtk::Table(8, 9),
 	T(372.75), // @ 0.1 MPa

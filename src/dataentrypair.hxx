@@ -94,10 +94,4 @@ public:
 	EfficiencyEntry(double val = 0);
 };
 
-class HeatOfVaporizationEntry : public EnthalpyEntry
-{
-public:
-	HeatOfVaporizationEntry(double val = 0);
-};
-
 #endif /*_H2O_GTK_DATAENTRYPAIR_HXX*/

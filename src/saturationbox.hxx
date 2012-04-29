@@ -19,6 +19,12 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/table.h>
 
+class HeatOfVaporizationEntry : public EnthalpyEntry
+{
+public:
+	HeatOfVaporizationEntry(double val = 0);
+};
+
 class SaturationBox : public Gtk::Table
 {
 	typedef sigc::signal<void, h2o::H2O*, int>

@@ -142,9 +142,3 @@ EfficiencyEntry::EfficiencyEntry(double val)
 {
 	set_tooltip_text("Efficiency");
 }
-
-HeatOfVaporizationEntry::HeatOfVaporizationEntry(double val)
-{
-	label.set_text_with_mnemonic("_r");
-	set_tooltip_text("Specific heat of vaporization");
-}
