@@ -9,6 +9,7 @@
 
 #include "main.hxx"
 
+#include <glibmm/miscutils.h>
 #include <gtkmm/main.h>
 #include <gtkmm/stock.h>
 #include <sigc++/functors/mem_fun.h>
@@ -108,6 +109,7 @@ MainWindow::MainWindow()
 
 int main(int argc, char* argv[])
 {
+	Glib::set_application_name(PACKAGE_NAME);
 	Gtk::Main kit(argc, argv);
 
 	MainWindow w;
