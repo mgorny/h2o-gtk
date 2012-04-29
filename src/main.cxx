@@ -68,14 +68,33 @@ QuitItem::QuitItem()
 {
 }
 
-MainMenu::MainMenu()
-	: file("_File", true)
+void AboutItem::on_activate()
 {
-	file_menu.append(*Gtk::manage(new QuitItem()));;
+	dialog.run();
+	dialog.hide();
+}
+
+AboutItem::AboutItem()
+	: Gtk::ImageMenuItem(Gtk::Stock::ABOUT)
+{
+	dialog.set_name(PACKAGE_NAME);
+	dialog.set_version(PACKAGE_VERSION);
+	dialog.set_copyright("(c) 2012 Micha\305\202 G\303\263rny");
+	dialog.set_website("https://bitbucket.org/mgorny/h2o-gtk/");
+}
+
+MainMenu::MainMenu()
+	: file("_File", true),
+	help("H_elp", true)
+{
+	file_menu.append(*Gtk::manage(new QuitItem()));
+	help_menu.append(*Gtk::manage(new AboutItem()));
 
 	file.set_submenu(file_menu);
+	help.set_submenu(help_menu);
 
 	append(file);
+	append(help);
 }
 
 MainWindow::MainWindow()

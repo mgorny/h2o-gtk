@@ -12,6 +12,7 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/window.h>
 
+#include <gtkmm/aboutdialog.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menubar.h>
@@ -49,11 +50,22 @@ public:
 	QuitItem();
 };
 
+class AboutItem : public Gtk::ImageMenuItem
+{
+protected:
+	Gtk::AboutDialog dialog;
+
+	void on_activate();
+
+public:
+	AboutItem();
+};
+
 class MainMenu : public Gtk::MenuBar
 {
 protected:
-	Gtk::Menu file_menu;
-	Gtk::ImageMenuItem file;
+	Gtk::Menu file_menu, help_menu;
+	Gtk::ImageMenuItem file, help;
 
 public:
 	MainMenu();
