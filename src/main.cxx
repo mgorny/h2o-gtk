@@ -10,6 +10,7 @@
 #include "main.hxx"
 
 #include <gtkmm/main.h>
+#include <gtkmm/stock.h>
 #include <sigc++/functors/mem_fun.h>
 
 MainHBox::MainHBox()
@@ -57,11 +58,31 @@ void MainHBox::page_switched(GtkNotebookPage* p, guint n)
 	}
 }
 
+void QuitItem::on_activate()
+{
+	Gtk::Main::quit();
+}
+
+QuitItem::QuitItem()
+	: Gtk::ImageMenuItem(Gtk::Stock::QUIT)
+{
+}
+
+MainMenu::MainMenu()
+	: file("_File", true)
+{
+	file_menu.append(*Gtk::manage(new QuitItem()));;
+
+	file.set_submenu(file_menu);
+
+	append(file);
+}
+
 MainWindow::MainWindow()
 {
-	set_border_width(10);
-
-	add(cont);
+	all.pack_start(menu, Gtk::PACK_SHRINK);
+	all.pack_start(cont);
+	add(all);
 
 	show_all();
 }

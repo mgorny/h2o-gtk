@@ -12,6 +12,11 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/window.h>
 
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/menu.h>
+#include <gtkmm/menubar.h>
+#include <gtkmm/menuitem.h>
+
 #include "calcbox.hxx"
 #include "expansionbox.hxx"
 #include "saturationbox.hxx"
@@ -35,9 +40,31 @@ public:
 	void page_switched(GtkNotebookPage* p, guint n);
 };
 
+class QuitItem : public Gtk::ImageMenuItem
+{
+protected:
+	void on_activate();
+
+public:
+	QuitItem();
+};
+
+class MainMenu : public Gtk::MenuBar
+{
+protected:
+	Gtk::Menu file_menu;
+	Gtk::ImageMenuItem file;
+
+public:
+	MainMenu();
+};
+
 class MainWindow : public Gtk::Window
 {
 protected:
+	Gtk::VBox all;
+
+	MainMenu menu;
 	MainHBox cont;
 
 public:
