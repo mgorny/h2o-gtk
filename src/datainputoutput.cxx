@@ -190,10 +190,66 @@ DataInputBase::DataInputBase(Gtk::Table& t, int first_row, int first_col)
 			first_row + 0, first_row + 1);
 }
 
+void DataInput::store_h2o(h2o::H2O* data, int len)
+{
+	assert(len == 1);
+
+	last_h2o = data[0];
+}
+
+void DataInput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
+		DataEntryPair& out1, DataEntryPair& out2,
+		DataEntryPair& out3, DataEntryPair& out4,
+		DataEntryPair& out5)
+{
+	try
+	{
+		switch (func_chooser.get_function())
+		{
+			case f_pT:
+				p.set_value(last_h2o.p());
+				T.set_value(last_h2o.T());
+				break;
+			case f_ph:
+				p.set_value(last_h2o.p());
+				h.set_value(last_h2o.h());
+				break;
+			case f_ps:
+				p.set_value(last_h2o.p());
+				s.set_value(last_h2o.s());
+				break;
+			case f_px:
+				p.set_value(last_h2o.p());
+				x.set_value(last_h2o.x());
+				break;
+			case f_Tx:
+				T.set_value(last_h2o.T());
+				x.set_value(last_h2o.x());
+				break;
+			case f_hs:
+				h.set_value(last_h2o.h());
+				s.set_value(last_h2o.s());
+				break;
+			case f_rhoT:
+				rho.set_value(last_h2o.rho());
+				T.set_value(last_h2o.T());
+				break;
+		}
+	}
+	catch (std::runtime_error)
+	{
+	};
+
+	DataInputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
+}
+
 DataInput::DataInput(Gtk::Table& t, int first_row, int first_col)
 	: DataIOBase(t),
 	DataInputBase(t, first_row, first_col)
 {
+	signal_data_changed().connect(
+			sigc::mem_fun(*this, &DataInput::store_h2o));
+
 	set_fields(p, T, v, u, h, s, x);
 }
 

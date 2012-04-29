@@ -91,6 +91,16 @@ protected:
 
 class DataInput : public DataInputBase
 {
+	void store_h2o(h2o::H2O* data, int len);
+
+protected:
+	h2o::H2O last_h2o;
+
+	virtual void set_fields(DataEntryPair& in1, DataEntryPair& in2,
+			DataEntryPair& out1, DataEntryPair& out2,
+			DataEntryPair& out3, DataEntryPair& out4,
+			DataEntryPair& out5);
+
 public:
 	DataInput(Gtk::Table& t, int first_row, int first_col = 0);
 };
