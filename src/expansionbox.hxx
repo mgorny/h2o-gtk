@@ -18,6 +18,18 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/table.h>
 
+class ExpansionWorkEntry : public EnthalpyEntry
+{
+public:
+	ExpansionWorkEntry(double val = 0);
+};
+
+class ExpansionHeatLossEntry : public EnthalpyEntry
+{
+public:
+	ExpansionHeatLossEntry(double val = 0);
+};
+
 class RealExpansionInputOutput : public LockedDataInputOutput
 {
 	typedef sigc::signal<void>
@@ -54,10 +66,14 @@ class ExpansionBox : public Gtk::Table
 
 protected:
 	DataInput in_io;
-	Gtk::HSeparator sep;
-	Gtk::VSeparator vsep;
 	LockedDataInputOutput out_io;
 	RealExpansionInputOutput real_io;
+
+	ExpansionWorkEntry w;
+	ExpansionHeatLossEntry dh;
+
+	Gtk::HSeparator sep;
+	Gtk::VSeparator vsep;
 	data_changed_sig data_changed;
 
 public:

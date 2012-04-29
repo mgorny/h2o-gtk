@@ -14,6 +14,18 @@
 #include <cassert>
 #include <stdexcept>
 
+ExpansionWorkEntry::ExpansionWorkEntry(double val)
+{
+	label.set_text_with_mnemonic("_w");
+	set_tooltip_text("Specific real expansion work");
+}
+
+ExpansionHeatLossEntry::ExpansionHeatLossEntry(double val)
+{
+	label.set_text_with_mnemonic("\316\224_h");
+	set_tooltip_text("Specific real expansion heat loss");
+}
+
 RealExpansionInputOutput::RealExpansionInputOutput(
 		Gtk::Table& t, int first_row,
 		double start_eta, int first_col)
@@ -80,6 +92,9 @@ ExpansionBox::ExpansionBox()
 	attach(sep, 0, 9, 4, 5);
 	attach(vsep, 4, 5, 0, 13);
 
+	w.add_to_table(*this, 1, 5);
+	dh.add_to_table(*this, 2, 5);
+
 	in_io.signal_data_changed().connect(
 			sigc::mem_fun(*this, &ExpansionBox::input_changed));
 	out_io.signal_data_changed().connect(
@@ -135,6 +150,20 @@ void ExpansionBox::real_changed(h2o::H2O* data, int len)
 	plot_data[0] = cached_data[0];
 	plot_data[1] = cached_data[1];
 	plot_data[2] = data[0];
+
+	try
+	{
+		w.set_readonly_value(cached_data[1].h() - data[0].h());
+		dh.set_readonly_value(data[0].h() - cached_data[0].h());
+
+		w.set_sensitive();
+		dh.set_sensitive();
+	}
+	catch (std::runtime_error)
+	{
+		w.set_sensitive(false);
+		dh.set_sensitive(false);
+	}
 
 	data_changed.emit(plot_data, 3);
 }
