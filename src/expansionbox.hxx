@@ -47,6 +47,7 @@ public:
 			double start_eta, int first_col = 0);
 
 	void disable();
+	double get_eta() const;
 
 	void recalc(h2o::H2O& in, h2o::H2O& out);
 

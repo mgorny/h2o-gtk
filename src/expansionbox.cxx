@@ -42,6 +42,11 @@ RealExpansionInputOutput::RealExpansionInputOutput(
 				&RealExpansionInputOutput::eta_change_handler));
 }
 
+double RealExpansionInputOutput::get_eta() const
+{
+	return eta.get_value();
+}
+
 void RealExpansionInputOutput::recalc(h2o::H2O& in, h2o::H2O& out)
 {
 	h2o::H2O exp;
@@ -145,14 +150,33 @@ void ExpansionBox::real_changed(h2o::H2O* data, int len)
 {
 	assert(len == 1);
 
-	h2o::H2O plot_data[3];
+	const int stepshi = 5;
+	const int stepslo = 15;
+	const int plot_len = stepshi + stepslo + 3;
+	h2o::H2O plot_data[plot_len];
 
 	plot_data[0] = cached_data[0];
 	plot_data[1] = cached_data[1];
-	plot_data[2] = data[0];
+	plot_data[plot_len - 1] = data[0];
 
 	try
 	{
+		const double p0 = cached_data[1].p();
+		const double p1 = data[0].p();
+		const double prange = (p1 - p0) / 6; // should be enough
+		const double psteplo = prange / stepslo;
+		const double pstephi = (p1 - p0 - prange) / stepshi;
+
+		const double eta = real_io.get_eta();
+
+		int i;
+		for (i = 1; i <= stepslo; ++i)
+			plot_data[plot_len - i - 1] = cached_data[1].expand(
+					p1 - psteplo * i, eta);
+		for (i = 1; i <= stepshi; ++i)
+			plot_data[2 + i] = cached_data[1].expand(
+					p0 + pstephi * i, eta);
+
 		w.set_readonly_value(cached_data[1].h() - data[0].h());
 		dh.set_readonly_value(data[0].h() - cached_data[0].h());
 
@@ -165,7 +189,7 @@ void ExpansionBox::real_changed(h2o::H2O* data, int len)
 		dh.set_sensitive(false);
 	}
 
-	data_changed.emit(plot_data, 3);
+	data_changed.emit(plot_data, plot_len);
 }
 
 void ExpansionBox::recalc()
