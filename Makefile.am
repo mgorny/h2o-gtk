@@ -1,6 +1,6 @@
 bin_PROGRAMS = h2o-gtk
 
-h2o_gtk_SOURCES = src/main.cxx \
+h2o_gtk_SOURCES = src/main.cxx src/main.hxx \
 	src/calcbox.cxx src/calcbox.hxx \
 	src/dataentrypair.cxx src/dataentrypair.hxx \
 	src/datainputoutput.cxx src/datainputoutput.hxx \
