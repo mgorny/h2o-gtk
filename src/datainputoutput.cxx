@@ -531,6 +531,7 @@ LockedDataInputOutput::LockedDataInputOutput(Gtk::Table& t, int first_row,
 
 	set_function(locked_func);
 	input_entry1->set_value(start_uval);
+	input_entry2->disable();
 }
 
 void LockedDataInputOutput::disable()

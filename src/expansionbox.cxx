@@ -102,6 +102,8 @@ ExpansionBox::ExpansionBox()
 
 	w.add_to_table(*this, 1, 5);
 	dh.add_to_table(*this, 2, 5);
+	w.disable();
+	dh.disable();
 
 	in_io.signal_data_changed().connect(
 			sigc::mem_fun(*this, &ExpansionBox::input_changed));
