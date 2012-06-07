@@ -70,12 +70,18 @@ void DataIOBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 
 static const double scrit = 4.41202148223476; // [kJ/kgK]
 
-static inline void r3_preset_x(DataEntryPair& x, DataEntryPair& s)
+static double r3_guess_x(double s)
 {
-	if (s.get_value() >= scrit)
-		x.set_readonly_value(1);
+	if (s >= scrit)
+		return 1;
 	else
-		x.set_readonly_value(0);
+		return 0;
+}
+
+static void set_guessed_x(DataEntryPair& x, double s)
+{
+	x.set_readonly_value(r3_guess_x(s));
+	x.set_sensitive(false);
 }
 
 h2o::H2O DataIOBase::get_h2o()
@@ -218,11 +224,17 @@ void DataInput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 				break;
 			case f_px:
 				p.set_value(last_h2o.p());
-				x.set_value(last_h2o.x());
+				if (last_h2o.region() == h2o::Region::R3)
+					set_guessed_x(x, last_h2o.s());
+				else
+					x.set_value(last_h2o.x());
 				break;
 			case f_Tx:
 				T.set_value(last_h2o.T());
-				x.set_value(last_h2o.x());
+				if (last_h2o.region() == h2o::Region::R3)
+					set_guessed_x(x, last_h2o.s());
+				else
+					x.set_value(last_h2o.x());
 				break;
 			case f_hs:
 				h.set_value(last_h2o.h());
@@ -300,7 +312,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 				h.set_readonly_value(medium.h());
 				s.set_readonly_value(medium.s());
 				if (medium.region() == h2o::Region::R3)
-					r3_preset_x(x, s);
+					set_guessed_x(x, s.get_value());
 				else
 					x.set_readonly_value(medium.x());
 				v.set_readonly_value(medium.v());
@@ -309,7 +321,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 				T.set_readonly_value(medium.T());
 				s.set_readonly_value(medium.s());
 				if (medium.region() == h2o::Region::R3)
-					r3_preset_x(x, s);
+					set_guessed_x(x, s.get_value());
 				else
 					x.set_readonly_value(medium.x());
 				v.set_readonly_value(medium.v());
@@ -318,7 +330,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 				T.set_readonly_value(medium.T());
 				h.set_readonly_value(medium.h());
 				if (medium.region() == h2o::Region::R3)
-					r3_preset_x(x, s);
+					set_guessed_x(x, s.get_value());
 				else
 					x.set_readonly_value(medium.x());
 				v.set_readonly_value(medium.v());
@@ -339,7 +351,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 				p.set_readonly_value(medium.p());
 				T.set_readonly_value(medium.T());
 				if (medium.region() == h2o::Region::R3)
-					r3_preset_x(x, s);
+					set_guessed_x(x, s.get_value());
 				else
 					x.set_readonly_value(medium.x());
 				v.set_readonly_value(medium.v());
@@ -349,7 +361,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 				h.set_readonly_value(medium.h());
 				s.set_readonly_value(medium.s());
 				if (medium.region() == h2o::Region::R3)
-					r3_preset_x(x, s);
+					set_guessed_x(x, s.get_value());
 				else
 					x.set_readonly_value(medium.x());
 		}
@@ -458,7 +470,7 @@ void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 			case f_hs:
 			case f_rhoT:
 				if (medium.region() == h2o::Region::R3)
-					r3_preset_x(x, s);
+					set_guessed_x(x, s.get_value());
 				else
 					x.set_readonly_value(medium.x());
 				break;
