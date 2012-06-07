@@ -1,5 +1,5 @@
 AC_PREREQ([2.60])
-AC_INIT([h2o-gtk+], [0],
+AC_INIT([h2o-gtk+], [0.1],
 		[https://bitbucket.org/mgorny/h2o-gtk/issues/],
 		[h2o-gtk],
 		[https://bitbucket.org/mgorny/h2o-gtk/])
