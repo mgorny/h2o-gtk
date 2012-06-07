@@ -81,7 +81,7 @@ AboutItem::AboutItem()
 	dialog.set_name(PACKAGE_NAME);
 	dialog.set_version(PACKAGE_VERSION);
 	dialog.set_copyright("(c) 2012 Micha\305\202 G\303\263rny");
-	dialog.set_website("https://bitbucket.org/mgorny/h2o-gtk/");
+	dialog.set_website(PACKAGE_URL);
 }
 
 MainMenu::MainMenu()
