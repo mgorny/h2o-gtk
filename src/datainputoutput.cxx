@@ -264,7 +264,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 		case f_pT:
 			h.set_readonly_value(medium, &h2o::H2O::h);
 			s.set_readonly_value(medium, &h2o::H2O::s);
-			if (medium.region() == 3)
+			if (medium.region() == h2o::Region::R3)
 				r3_preset_x(x, s);
 			x.set_readonly_value(medium, &h2o::H2O::x);
 			v.set_readonly_value(medium, &h2o::H2O::v);
@@ -272,7 +272,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 		case f_ph:
 			T.set_readonly_value(medium, &h2o::H2O::T);
 			s.set_readonly_value(medium, &h2o::H2O::s);
-			if (medium.region() == 3)
+			if (medium.region() == h2o::Region::R3)
 				r3_preset_x(x, s);
 			x.set_readonly_value(medium, &h2o::H2O::x);
 			v.set_readonly_value(medium, &h2o::H2O::v);
@@ -280,7 +280,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 		case f_ps:
 			T.set_readonly_value(medium, &h2o::H2O::T);
 			h.set_readonly_value(medium, &h2o::H2O::h);
-			if (medium.region() == 3)
+			if (medium.region() == h2o::Region::R3)
 				r3_preset_x(x, s);
 			x.set_readonly_value(medium, &h2o::H2O::x);
 			v.set_readonly_value(medium, &h2o::H2O::v);
@@ -300,7 +300,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 		case f_hs:
 			p.set_readonly_value(medium, &h2o::H2O::p);
 			T.set_readonly_value(medium, &h2o::H2O::T);
-			if (medium.region() == 3)
+			if (medium.region() == h2o::Region::R3)
 				r3_preset_x(x, s);
 			x.set_readonly_value(medium, &h2o::H2O::x);
 			v.set_readonly_value(medium, &h2o::H2O::v);
@@ -309,7 +309,7 @@ void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 			p.set_readonly_value(medium, &h2o::H2O::p);
 			h.set_readonly_value(medium, &h2o::H2O::h);
 			s.set_readonly_value(medium, &h2o::H2O::s);
-			if (medium.region() == 3)
+			if (medium.region() == h2o::Region::R3)
 				r3_preset_x(x, s);
 			x.set_readonly_value(medium, &h2o::H2O::x);
 	}
@@ -387,19 +387,19 @@ void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 	const char* label_text;
 	switch (medium.region())
 	{
-		case 1:
+		case h2o::Region::R1:
 			label_text = "Region 1 (sat. water)";
 			break;
-		case 2:
+		case h2o::Region::R2:
 			label_text = "Region 2 (dry steam)";
 			break;
-		case 3:
+		case h2o::Region::R3:
 			label_text = "Region 3 (supercrit.)";
 			break;
-		case 4:
+		case h2o::Region::R4:
 			label_text = "Region 4 (wet steam)";
 			break;
-		case 5:
+		case h2o::Region::R5:
 			label_text = "Region 5 (dry steam)";
 			break;
 		default:
@@ -414,7 +414,7 @@ void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 		case f_ps:
 		case f_hs:
 		case f_rhoT:
-			if (medium.region() == 3)
+			if (medium.region() == h2o::Region::R3)
 				r3_preset_x(x, s);
 			x.set_readonly_value(medium, &h2o::H2O::x);
 			break;
