@@ -33,6 +33,8 @@ enum PlotAxisQuantity
 	pa_h,
 	pa_s,
 	pa_rho
+
+	// if ever adding pa_x, remember to add R3 check to replot()
 };
 
 typedef double (h2o::H2O::*PlotAxisProperty)() const;

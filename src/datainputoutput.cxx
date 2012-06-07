@@ -120,9 +120,7 @@ void DataIOBase::recalc()
 	}
 	catch (std::range_error)
 	{
-	}
-	catch (std::runtime_error)
-	{
+		// leave it uninitialized
 	};
 
 	data_changed.emit(&medium, 1);
@@ -202,7 +200,7 @@ void DataInput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 		DataEntryPair& out3, DataEntryPair& out4,
 		DataEntryPair& out5)
 {
-	try
+	if (last_h2o.initialized())
 	{
 		switch (func_chooser.get_function())
 		{
@@ -236,9 +234,6 @@ void DataInput::set_fields(DataEntryPair& in1, DataEntryPair& in2,
 				break;
 		}
 	}
-	catch (std::runtime_error)
-	{
-	};
 
 	DataInputBase::set_fields(in1, in2, out1, out2, out3, out4, out5);
 }

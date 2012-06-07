@@ -140,18 +140,14 @@ void DataCurve::replot(PlotAxisProperty x_prop, PlotAxisProperty y_prop)
 	{
 		double xval, yval;
 
-		try
+		if (data[i].initialized())
 		{
 			xval = (data[i].*x_prop)();
 			yval = (data[i].*y_prop)();
-		}
-		catch (std::runtime_error)
-		{
-			continue;
-		};
 
-		x.push_back(xval);
-		y.push_back(yval);
+			x.push_back(xval);
+			y.push_back(yval);
+		}
 	}
 
 	if (x.size() > 0)

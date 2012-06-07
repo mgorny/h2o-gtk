@@ -53,13 +53,16 @@ void RealExpansionInputOutput::recalc(h2o::H2O& in, h2o::H2O& out)
 
 	try
 	{
+		if (!in.initialized() || !out.initialized())
+			throw std::range_error("");
+
 		exp = in.expand(out.p(), eta.get_value());
 
 		p.set_readonly_value(exp, &h2o::H2O::p);
 		h.set_readonly_value(exp, &h2o::H2O::h);
 		eta.set_sensitive();
 	}
-	catch (std::runtime_error)
+	catch (std::range_error)
 	{
 		h.set_readonly_value(0);
 		disable();
@@ -119,12 +122,12 @@ void ExpansionBox::input_changed(h2o::H2O* data, int len)
 
 	cached_data[1] = data[0];
 
-	try
+	if (data[0].initialized())
 	{
 		out_io.set_user_value_range(1E-3, data[0].p());
 		out_io.set_controlled_value(data[0].s());
 	}
-	catch (std::runtime_error)
+	else
 	{
 		// this is a hack to ensure re-calculation
 		// after correcting input and re-enabling entries
@@ -159,7 +162,8 @@ void ExpansionBox::real_changed(h2o::H2O* data, int len)
 	plot_data[1] = cached_data[1];
 	plot_data[plot_len - 1] = data[0];
 
-	try
+	if (cached_data[0].initialized() && cached_data[1].initialized()
+			&& data[0].initialized())
 	{
 		const double p0 = cached_data[1].p();
 		const double p1 = data[0].p();
@@ -183,7 +187,7 @@ void ExpansionBox::real_changed(h2o::H2O* data, int len)
 		w.set_sensitive();
 		dh.set_sensitive();
 	}
-	catch (std::runtime_error)
+	else
 	{
 		w.set_sensitive(false);
 		dh.set_sensitive(false);
