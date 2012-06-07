@@ -73,20 +73,8 @@ void DataEntryPair::set_readonly_value(double val)
 #if 0 // set_range() should be enough
 	Gtk::SpinButton::set_value(val);
 #endif
-}
 
-void DataEntryPair::set_readonly_value(const h2o::H2O& medium, MediumProperty prop)
-{
-	try
-	{
-		double v = (medium.*prop)();
-		set_readonly_value(v);
-		set_sensitive(true);
-	}
-	catch (std::runtime_error)
-	{
-		set_sensitive(false);
-	};
+	set_sensitive(true);
 }
 
 PressureEntry::PressureEntry(double val)

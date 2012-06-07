@@ -58,8 +58,8 @@ void RealExpansionInputOutput::recalc(h2o::H2O& in, h2o::H2O& out)
 
 		exp = in.expand(out.p(), eta.get_value());
 
-		p.set_readonly_value(exp, &h2o::H2O::p);
-		h.set_readonly_value(exp, &h2o::H2O::h);
+		p.set_readonly_value(exp.p());
+		h.set_readonly_value(exp.h());
 		eta.set_sensitive();
 	}
 	catch (std::range_error)

@@ -16,8 +16,6 @@
 
 class DataEntryPair : public Gtk::SpinButton
 {
-	typedef double (h2o::H2O::*MediumProperty)() const;
-
 	double def_min, def_max;
 	bool attached;
 
@@ -37,7 +35,6 @@ public:
 	void disable();
 
 	void set_readonly_value(double newval);
-	void set_readonly_value(const h2o::H2O& medium, MediumProperty prop);
 };
 
 class PressureEntry : public DataEntryPair

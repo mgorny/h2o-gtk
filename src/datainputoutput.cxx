@@ -248,68 +248,114 @@ DataInput::DataInput(Gtk::Table& t, int first_row, int first_col)
 	set_fields(p, T, v, u, h, s, x);
 }
 
+static void disable_fields(
+		DataEntryPair& f1, DataEntryPair& f2,
+		DataEntryPair& f3, DataEntryPair& f4)
+{
+	f1.set_sensitive(false);
+	f2.set_sensitive(false);
+	f3.set_sensitive(false);
+	f4.set_sensitive(false);
+}
+
 void DataOutputBase::recalc_for(h2o::H2O* data, int len)
 {
 	assert(len == 1);
 
 	h2o::H2O& medium = data[0];
 
-	switch (func_chooser.get_function())
+	if (!medium.initialized())
 	{
-		case f_pT:
-			h.set_readonly_value(medium, &h2o::H2O::h);
-			s.set_readonly_value(medium, &h2o::H2O::s);
-			if (medium.region() == h2o::Region::R3)
-				r3_preset_x(x, s);
-			x.set_readonly_value(medium, &h2o::H2O::x);
-			v.set_readonly_value(medium, &h2o::H2O::v);
-			break;
-		case f_ph:
-			T.set_readonly_value(medium, &h2o::H2O::T);
-			s.set_readonly_value(medium, &h2o::H2O::s);
-			if (medium.region() == h2o::Region::R3)
-				r3_preset_x(x, s);
-			x.set_readonly_value(medium, &h2o::H2O::x);
-			v.set_readonly_value(medium, &h2o::H2O::v);
-			break;
-		case f_ps:
-			T.set_readonly_value(medium, &h2o::H2O::T);
-			h.set_readonly_value(medium, &h2o::H2O::h);
-			if (medium.region() == h2o::Region::R3)
-				r3_preset_x(x, s);
-			x.set_readonly_value(medium, &h2o::H2O::x);
-			v.set_readonly_value(medium, &h2o::H2O::v);
-			break;
-		case f_px:
-			T.set_readonly_value(medium, &h2o::H2O::T);
-			h.set_readonly_value(medium, &h2o::H2O::h);
-			s.set_readonly_value(medium, &h2o::H2O::s);
-			v.set_readonly_value(medium, &h2o::H2O::v);
-			break;
-		case f_Tx:
-			p.set_readonly_value(medium, &h2o::H2O::p);
-			h.set_readonly_value(medium, &h2o::H2O::h);
-			s.set_readonly_value(medium, &h2o::H2O::s);
-			v.set_readonly_value(medium, &h2o::H2O::v);
-			break;
-		case f_hs:
-			p.set_readonly_value(medium, &h2o::H2O::p);
-			T.set_readonly_value(medium, &h2o::H2O::T);
-			if (medium.region() == h2o::Region::R3)
-				r3_preset_x(x, s);
-			x.set_readonly_value(medium, &h2o::H2O::x);
-			v.set_readonly_value(medium, &h2o::H2O::v);
-			break;
-		case f_rhoT:
-			p.set_readonly_value(medium, &h2o::H2O::p);
-			h.set_readonly_value(medium, &h2o::H2O::h);
-			s.set_readonly_value(medium, &h2o::H2O::s);
-			if (medium.region() == h2o::Region::R3)
-				r3_preset_x(x, s);
-			x.set_readonly_value(medium, &h2o::H2O::x);
-	}
+		switch (func_chooser.get_function())
+		{
+			case f_pT:
+				disable_fields(h, s, x, v);
+				break;
+			case f_ph:
+				disable_fields(T, s, x, v);
+				break;
+			case f_ps:
+				disable_fields(T, h, x, v);
+				break;
+			case f_px:
+				disable_fields(T, h, s, v);
+				break;
+			case f_Tx:
+				disable_fields(p, h, s, v);
+				break;
+			case f_hs:
+				disable_fields(p, T, x, v);
+				break;
+			case f_rhoT:
+				disable_fields(p, h, s, x);
+		}
 
-	u.set_readonly_value(medium, &h2o::H2O::u);
+		u.set_sensitive(false);
+	}
+	else
+	{
+		switch (func_chooser.get_function())
+		{
+			case f_pT:
+				h.set_readonly_value(medium.h());
+				s.set_readonly_value(medium.s());
+				if (medium.region() == h2o::Region::R3)
+					r3_preset_x(x, s);
+				else
+					x.set_readonly_value(medium.x());
+				v.set_readonly_value(medium.v());
+				break;
+			case f_ph:
+				T.set_readonly_value(medium.T());
+				s.set_readonly_value(medium.s());
+				if (medium.region() == h2o::Region::R3)
+					r3_preset_x(x, s);
+				else
+					x.set_readonly_value(medium.x());
+				v.set_readonly_value(medium.v());
+				break;
+			case f_ps:
+				T.set_readonly_value(medium.T());
+				h.set_readonly_value(medium.h());
+				if (medium.region() == h2o::Region::R3)
+					r3_preset_x(x, s);
+				else
+					x.set_readonly_value(medium.x());
+				v.set_readonly_value(medium.v());
+				break;
+			case f_px:
+				T.set_readonly_value(medium.T());
+				h.set_readonly_value(medium.h());
+				s.set_readonly_value(medium.s());
+				v.set_readonly_value(medium.v());
+				break;
+			case f_Tx:
+				p.set_readonly_value(medium.p());
+				h.set_readonly_value(medium.h());
+				s.set_readonly_value(medium.s());
+				v.set_readonly_value(medium.v());
+				break;
+			case f_hs:
+				p.set_readonly_value(medium.p());
+				T.set_readonly_value(medium.T());
+				if (medium.region() == h2o::Region::R3)
+					r3_preset_x(x, s);
+				else
+					x.set_readonly_value(medium.x());
+				v.set_readonly_value(medium.v());
+				break;
+			case f_rhoT:
+				p.set_readonly_value(medium.p());
+				h.set_readonly_value(medium.h());
+				s.set_readonly_value(medium.s());
+				if (medium.region() == h2o::Region::R3)
+					r3_preset_x(x, s);
+				else
+					x.set_readonly_value(medium.x());
+		}
+
+		u.set_readonly_value(medium.u());
+	}
 }
 
 void DataOutputBase::set_fields(DataEntryPair& in1, DataEntryPair& in2,
@@ -402,20 +448,24 @@ void DataOutputWithRegion::recalc_for(h2o::H2O* data, int len)
 	}
 	region_label.set_text(label_text);
 
-	switch (func_chooser.get_function())
+	if (medium.initialized())
 	{
-		case f_pT:
-		case f_ph:
-		case f_ps:
-		case f_hs:
-		case f_rhoT:
-			if (medium.region() == h2o::Region::R3)
-				r3_preset_x(x, s);
-			x.set_readonly_value(medium, &h2o::H2O::x);
-			break;
-		case f_px:
-		case f_Tx:
-			break;
+		switch (func_chooser.get_function())
+		{
+			case f_pT:
+			case f_ph:
+			case f_ps:
+			case f_hs:
+			case f_rhoT:
+				if (medium.region() == h2o::Region::R3)
+					r3_preset_x(x, s);
+				else
+					x.set_readonly_value(medium.x());
+				break;
+			case f_px:
+			case f_Tx:
+				break;
+		}
 	}
 }
 
